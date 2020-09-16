@@ -12,9 +12,34 @@ namespace shape
 	//! CORE IMAGE
 	//!
 
-	struct CoreImage
+	class CoreImage
 	{
 	public:
+		inline CoreImage()
+		{
+			m_format = uint32_t();
+			m_stride = uint32_t();
+			m_length = uint32_t();
+			m_w = uint16_t();
+			m_h = uint16_t();
+		}
+
+		/**
+		 * @param format
+		 * @param stride
+		 * @param length
+		 * @param w
+		 * @param h
+		 */
+		inline CoreImage(uint32_t p_format, uint32_t p_stride, uint32_t p_length, uint16_t p_w, uint16_t p_h)
+		{
+			m_format = p_format;
+			m_stride = p_stride;
+			m_length = p_length;
+			m_w = p_w;
+			m_h = p_h;
+		}
+
 		template<class Reader, class Output> Output& load(Output&) noexcept;
 		template<class Reader, class Output> Output& save(Output&) noexcept;
 

@@ -23,12 +23,12 @@ namespace shape
 		//!
 		//!
 
-		static void get(std::istream&, uint16_t&) noexcept;
-		static void get(std::istream&, uint32_t&) noexcept;
-		static void get(std::istream&, uint64_t&) noexcept;
-		static void get(std::istream&, sint16_t&) noexcept;
-		static void get(std::istream&, sint32_t&) noexcept;
-		static void get(std::istream&, sint64_t&) noexcept;
+		static std::istream& get(std::istream&, uint16_t&) noexcept;
+		static std::istream& get(std::istream&, uint32_t&) noexcept;
+		static std::istream& get(std::istream&, uint64_t&) noexcept;
+		static std::istream& get(std::istream&, sint16_t&) noexcept;
+		static std::istream& get(std::istream&, sint32_t&) noexcept;
+		static std::istream& get(std::istream&, sint64_t&) noexcept;
 	};
 
 	//!

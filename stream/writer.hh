@@ -18,17 +18,17 @@ namespace shape
 
 	struct CoreStreamWriter
 	{
-		static bool setFormat(std::ostream&, const uuid_t&) noexcept;
+		static std::ostream& setFormat(std::ostream&, const uuid_t&) noexcept;
 
 		//!
 		//!
 
-		static void set(std::ostream&, uint16_t) noexcept;
-		static void set(std::ostream&, uint32_t) noexcept;
-		static void set(std::ostream&, uint64_t) noexcept;
-		static void set(std::ostream&, sint16_t) noexcept;
-		static void set(std::ostream&, sint32_t) noexcept;
-		static void set(std::ostream&, sint64_t) noexcept;
+		static std::ostream& set(std::ostream&, uint16_t) noexcept;
+		static std::ostream& set(std::ostream&, uint32_t) noexcept;
+		static std::ostream& set(std::ostream&, uint64_t) noexcept;
+		static std::ostream& set(std::ostream&, sint16_t) noexcept;
+		static std::ostream& set(std::ostream&, sint32_t) noexcept;
+		static std::ostream& set(std::ostream&, sint64_t) noexcept;
 	};
 
 	//!

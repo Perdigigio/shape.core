@@ -11,16 +11,19 @@ namespace shape
 
 	template<char A> std::istream& mandate(std::istream& p_stream)
 	{
+		std::istream::sentry l_sentry(p_stream);
+
 		//!
 		//! CHECK THAT LAST EXTRACTED CHAR IS p_mandatory
 		//!
 
-		if (p_stream && p_stream.get() != A)
+		if (!l_sentry || p_stream.get() != A)
 		{
 			//!
+			//! SET ERROR STATE ON STREAM
 			//!
 
-			p_stream.setstate(std::istream::failbit);
+			p_stream.setstate(p_stream.rdstate() | std::istream::failbit);
 		}
 
 		//!
@@ -48,62 +51,101 @@ namespace shape
 				 >> data_4 >> mandate<'-'>
 				 >> data_5;
 		}
+
+		if (p_stream >> mandate<0>)
+		{
+			//!
+			//! CHECK UUID EQUIVALENCE
+			//!
+
+			return uuid_t{ data_1, data_2, data_3, data_4, data_5 } == p_uuid;
+		}
+
 		//!
-		//! CHECK UUID EQUIVALENCE
 		//!
 
-		return p_stream && uuid_t{ data_1, data_2, data_3, data_4, data_5 } == p_uuid;
+		return p_stream.good();
 	}
 
 	//!
 	//!
 
-	void CoreStreamReader::get(std::istream& p_stream, uint16_t& p_u16) noexcept
+	std::istream& CoreStreamReader::get(std::istream& p_stream, uint16_t& p_u16) noexcept
 	{
 		p_stream >> mandate<'u'>
 			 >> mandate<'1'>
 			 >> mandate<'6'>
 			 >> mandate<':'> >> std::hex >> p_u16;
+
+		//!
+		//!
+
+		return p_stream >> mandate<0>;
 	}
 
-	void CoreStreamReader::get(std::istream& p_stream, uint32_t& p_u32) noexcept
+	std::istream& CoreStreamReader::get(std::istream& p_stream, uint32_t& p_u32) noexcept
 	{
 		p_stream >> mandate<'u'>
 			 >> mandate<'3'>
 			 >> mandate<'2'>
 			 >> mandate<':'> >> std::hex >> p_u32;
+
+		//!
+		//!
+
+		return p_stream >> mandate<0>;
 	}
 
-	void CoreStreamReader::get(std::istream& p_stream, uint64_t& p_u64) noexcept
+	std::istream& CoreStreamReader::get(std::istream& p_stream, uint64_t& p_u64) noexcept
 	{
 		p_stream >> mandate<'u'>
 			 >> mandate<'6'>
 			 >> mandate<'4'>
 			 >> mandate<':'> >> std::hex >> p_u64;
+
+		//!
+		//!
+
+		return p_stream >> mandate<0>;
 	}
 
-	void CoreStreamReader::get(std::istream& p_stream, uint16_t& p_i16) noexcept
+	std::istream& CoreStreamReader::get(std::istream& p_stream, sint16_t& p_i16) noexcept
 	{
 		p_stream >> mandate<'i'>
 			 >> mandate<'1'>
 			 >> mandate<'6'>
 			 >> mandate<':'> >> std::hex >> p_i16;
+
+		//!
+		//!
+
+		return p_stream >> mandate<0>;
 	}
 
-	void CoreStreamReader::get(std::istream& p_stream, uint32_t& p_i32) noexcept
+	std::istream& CoreStreamReader::get(std::istream& p_stream, sint32_t& p_i32) noexcept
 	{
 		p_stream >> mandate<'i'>
 			 >> mandate<'3'>
 			 >> mandate<'2'>
 			 >> mandate<':'> >> std::hex >> p_i32;
+
+		//!
+		//!
+
+		return p_stream >> mandate<0>;
 	}
 
-	void CoreStreamReader::get(std::istream& p_stream, uint64_t& p_i64) noexcept
+	std::istream& CoreStreamReader::get(std::istream& p_stream, sint64_t& p_i64) noexcept
 	{
 		p_stream >> mandate<'i'>
 			 >> mandate<'6'>
 			 >> mandate<'4'>
 			 >> mandate<':'> >> std::hex >> p_i64;
+
+		//!
+		//!
+
+		return p_stream >> mandate<0>;
 	}
 
 }
