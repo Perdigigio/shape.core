@@ -6,16 +6,16 @@
 
 namespace shape
 {
-	constexpr uuid_t IID_CoreModel = { 0x1cd8ed99, 0x2293, 0x496e, 0xae9d, 0x62e0f6beea3a };
+	constexpr uuid_t IID_CoreAssetModel = { 0x1cd8ed99, 0x2293, 0x496e, 0xae9d, 0x62e0f6beea3a };
 
 	//!
 	//! CORE MODEL
 	//!
 
-	class CoreModel
+	class CoreAssetModel
 	{
 	public:
-		inline CoreModel()
+		inline CoreAssetModel()
 		{
 			m_vertsCount = uint32_t();
 			m_facesCount = uint32_t();
@@ -27,7 +27,7 @@ namespace shape
 		 * @param facesCount Total model faces count
 		 * @param edgesCount Per face edge count
 		 */
-		inline CoreModel(uint32_t p_vertsCount, uint32_t p_facesCount, uint32_t p_edgesCount)
+		inline CoreAssetModel(uint32_t p_vertsCount, uint32_t p_facesCount, uint32_t p_edgesCount)
 		{
 			m_vertsCount = p_vertsCount;
 			m_facesCount = p_facesCount;
@@ -54,9 +54,9 @@ namespace shape
 	//!
 	//!
 
-	template<class Reader, class Output> Output& CoreModel::load(Output& p_source) noexcept
+	template<class Reader, class Output> Output& CoreAssetModel::load(Output& p_source) noexcept
 	{
-		if (Reader::getFormat(p_source, IID_CoreModel))
+		if (Reader::getFormat(p_source, IID_CoreAssetModel))
 		{
 			Reader::get(p_source, m_vertsCount);
 			Reader::get(p_source, m_facesCount);
@@ -66,12 +66,12 @@ namespace shape
 		//!
 		//!
 
-		return p_source;
+		return Reader::end(p_source);
 	}
 
-	template<class Writer, class Output> Output& CoreModel::save(Output& p_output) noexcept
+	template<class Writer, class Output> Output& CoreAssetModel::save(Output& p_output) noexcept
 	{
-		if (Writer::setFormat(p_output, IID_CoreModel))
+		if (Writer::setFormat(p_output, IID_CoreAssetModel))
 		{
 			Writer::set(p_output, m_vertsCount);
 			Writer::set(p_output, m_facesCount);
@@ -81,7 +81,8 @@ namespace shape
 		//!
 		//!
 
-		return p_output;
+		return Writer::end(p_output);
 	}
+}
 
 #endif

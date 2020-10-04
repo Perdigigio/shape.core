@@ -29,6 +29,11 @@ namespace shape
 		static std::istream& get(std::istream&, sint16_t&) noexcept;
 		static std::istream& get(std::istream&, sint32_t&) noexcept;
 		static std::istream& get(std::istream&, sint64_t&) noexcept;
+
+		//!
+		//!
+
+		static std::istream& end(std::istream&) noexcept;
 	};
 
 	//!

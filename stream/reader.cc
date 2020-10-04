@@ -148,6 +148,14 @@ namespace shape
 		return p_stream >> mandate<0>;
 	}
 
+	std::istream& CoreStreamReader::end(std::istream& p_stream) noexcept
+	{
+		//!
+		//!
+
+		return p_stream.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+	}
+
 }
 
 // vim: ts=8

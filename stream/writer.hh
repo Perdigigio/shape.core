@@ -21,6 +21,7 @@ namespace shape
 		static std::ostream& setFormat(std::ostream&, const uuid_t&) noexcept;
 
 		//!
+		//! SCALAR
 		//!
 
 		static std::ostream& set(std::ostream&, uint16_t) noexcept;
@@ -29,6 +30,8 @@ namespace shape
 		static std::ostream& set(std::ostream&, sint16_t) noexcept;
 		static std::ostream& set(std::ostream&, sint32_t) noexcept;
 		static std::ostream& set(std::ostream&, sint64_t) noexcept;
+
+		static std::ostream& end(std::ostream&) noexcept;
 	};
 
 	//!

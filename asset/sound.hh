@@ -6,15 +6,23 @@
 
 namespace shape
 {
-	constexpr uuid_t IID_CoreSound = { 0xfb9500a7, 0x0a17, 0x49b7, 0x9d00, 0x108ea156be51 };
+	constexpr uuid_t IID_CoreAssetSound = { 0xfb9500a7, 0x0a17, 0x49b7, 0x9d00, 0x108ea156be51 };
 
 	//!
 	//! CORE SOUND
 	//!
 
-	class CoreSound
+	class CoreAssetSound
 	{
 	public:
+		inline CoreAssetSound()
+		{
+			m_format = uint32_t();
+			m_length = uint32_t();
+			m_stride = uint32_t();
+			m_sampleFrequency = uint32_t();
+		}
+
 		template<class Reader, class Source> Source& load(Source&);
 		template<class Writer, class Output> Output& save(Output&);
 
@@ -37,9 +45,9 @@ namespace shape
 	//!
 	//!
 
-	template<class Reader, class Source> Source& CoreSound::load(Source& p_source)
+	template<class Reader, class Source> Source& CoreAssetSound::load(Source& p_source)
 	{
-		if (Reader::getFormat(p_source, IID_CoreSound))
+		if (Reader::getFormat(p_source, IID_CoreAssetSound))
 		{
 			Reader::get(p_source, m_format);
 			Reader::get(p_source, m_stride);
@@ -53,9 +61,9 @@ namespace shape
 		return p_source;
 	}
 
-	template<class Writer, class Output> Output& CoreSound::save(Output& p_output)
+	template<class Writer, class Output> Output& CoreAssetSound::save(Output& p_output)
 	{
-		if (Writer::setFormat(p_output, IID_CoreSound))
+		if (Writer::setFormat(p_output, IID_CoreAssetSound))
 		{
 			Writer::set(p_outset, m_format);
 			Writer::set(p_outset, m_stride);

@@ -109,6 +109,12 @@ namespace shape
 		return p_stream << std::ends;
 	}
 
+
+	std::ostream& CoreStreamWriter::end(std::ostream& p_stream) noexcept
+	{
+		return p_stream << std::endl;
+	}
+
 }
 
 // vim: ts=8
