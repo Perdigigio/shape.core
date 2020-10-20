@@ -13,6 +13,16 @@ namespace shape
 	typedef struct source3D source3D_t;
 
 	//!
+	//! FLAGS
+	//!
+
+	struct CoreVideoSourceFlags
+	{
+		static constexpr uint32_t IsArray = 1 << 0;
+		static constexpr uint32_t IsCubic = 1 << 1;
+	};
+
+	//!
 	//!
 
 	template<class Source> class CoreVideoSource

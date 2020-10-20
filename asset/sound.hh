@@ -17,7 +17,7 @@ namespace shape
 	public:
 		inline CoreAssetSound()
 		{
-			m_format = uint32_t();
+			m_bitset = uint32_t();
 			m_length = uint32_t();
 			m_stride = uint32_t();
 			m_sampleFrequency = uint32_t();
@@ -30,13 +30,13 @@ namespace shape
 		//! GETTERS
 		//!
 
-		inline uint32_t getFormat() const { return m_format; }
+		inline uint32_t getBitset() const { return m_bitset; }
 		inline uint32_t getLength() const { return m_length; }
 		inline uint32_t getStride() const { return m_stride; }
 		inline uint32_t getSampleFrequency() const { return m_sampleFrequency; }
 
 	private:
-		uint32_t m_format;
+		uint32_t m_bitset;
 		uint32_t m_stride;
 		uint32_t m_length;
 		uint32_t m_sampleFrequency;
@@ -49,7 +49,7 @@ namespace shape
 	{
 		if (Reader::getFormat(p_source, IID_CoreAssetSound))
 		{
-			Reader::get(p_source, m_format);
+			Reader::get(p_source, m_bitset);
 			Reader::get(p_source, m_stride);
 			Reader::get(p_source, m_length);
 			Reader::get(p_source, m_sampleFrequency);
@@ -65,7 +65,7 @@ namespace shape
 	{
 		if (Writer::setFormat(p_output, IID_CoreAssetSound))
 		{
-			Writer::set(p_outset, m_format);
+			Writer::set(p_outset, m_bitset);
 			Writer::set(p_outset, m_stride);
 			Writer::set(p_outset, m_length);
 			Writer::set(p_outset, m_sampleFrequency);

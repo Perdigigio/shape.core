@@ -4,6 +4,7 @@
 #include "buffer.hh"
 #include "source.hh"
 #include "shader.hh"
+#include "target.hh"
 
 namespace shape
 {
@@ -72,10 +73,19 @@ namespace shape
 		template<class Source> CoreVideoSource<Source> createSource(const source3D_t&, const uuid_t&, bitset_t, const subresource_t *) noexcept;
 
 		/**
+		 * @param target
+		 * @param format
+		 * @param bitset
+		 */
+		template<class Target> CoreVideoTarget<Target> createTarget(const target1D_t&, const uuid_t&, bitset_t) noexcept;
+		template<class Target> CoreVideoTarget<Target> createTarget(const target2D_t&, const uuid_t&, bitset_t) noexcept;
+		template<class Target> CoreVideoTarget<Target> createTarget(const target3D_t&, const uuid_t&, bitset_t) noexcept;
+
+		/**
 		 * @param source-length
 		 * @param source
 		 */
-		template<class Shader> CoreVideoShader<Shader> createShader(length_t, typename Shader::source_t);
+		template<class Shader> CoreVideoShader<Shader> createShader(length_t, const char *);
 
 		//!
 		//!
@@ -216,8 +226,86 @@ namespace shape
 	}
 
 	template<class Device>
+	template<class Target>
+	CoreVideoTarget<Target> CoreVideoDevice<Device>::createTarget(const target1D_t& p_target, const uuid_t& p_format, bitset_t p_bitset) noexcept
+	{
+		typename Target::format_t l_format = Target::cast(p_format);
+		typename Target::handle_t l_handle = Target::open(m_handle, p_target, l_format, p_bitset);
+
+		//!
+		//! CHECK IF HANDLE IS VALID
+		//!
+
+		if (l_handle == Target::handle_t())
+		{
+			//!
+			//! NOTIFY FAILURE
+			//!
+
+			CoreError::error("failed creating 1D target"); //! TODO formatter
+		}
+
+		//!
+		//!
+
+		return CoreVideoTarget<Target>{l_handle, l_format, p_bitset};
+	}
+
+	template<class Device>
+	template<class Target>
+	CoreVideoTarget<Target> CoreVideoDevice<Device>::createTarget(const target2D_t& p_target, const uuid_t& p_format, bitset_t p_bitset) noexcept
+	{
+		typename Target::format_t l_format = Target::cast(p_format);
+		typename Target::handle_t l_handle = Target::open(m_handle, p_target, l_format, p_bitset);
+
+		//!
+		//! CHECK IF HANDLE IS VALID
+		//!
+
+		if (l_handle == Target::handle_t())
+		{
+			//!
+			//! NOTIFY FAILURE
+			//!
+
+			CoreError::error("failed creating 2D target"); //! TODO formatter
+		}
+
+		//!
+		//!
+
+		return CoreVideoTarget<Target>{l_handle, l_format, p_bitset};
+	}
+
+	template<class Device>
+	template<class Target>
+	CoreVideoTarget<Target> CoreVideoDevice<Device>::createTarget(const target3D_t& p_target, const uuid_t& p_format, bitset_t p_bitset) noexcept
+	{
+		typename Target::format_t l_format = Target::cast(p_format);
+		typename Target::handle_t l_handle = Target::open(m_handle, p_target, l_format, p_bitset);
+
+		//!
+		//! CHECK IF HANDLE IS VALID
+		//!
+
+		if (l_handle == Target::handle_t())
+		{
+			//!
+			//! NOTIFY FAILURE
+			//!
+
+			CoreError::error("failed creating 3D target"); //! TODO formatter
+		}
+
+		//!
+		//!
+
+		return CoreVideoTarget<Target>{l_handle, l_format, p_bitset};
+	}
+
+	template<class Device>
 	template<class Shader>
-	CoreVideoShader<Shader> CoreVideoDevice<Device>::createShader(length_t p_length, typename Shader::source_t p_source)
+	CoreVideoShader<Shader> CoreVideoDevice<Device>::createShader(length_t p_length, const char * p_source)
 	{
 		typename Shader::handle_t l_handle = Shader::open(m_handle, p_length, p_source);
 
