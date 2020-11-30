@@ -54,7 +54,7 @@ namespace shape
 	//!
 	//!
 
-	template<class Reader, class Output> Output& CoreAssetModel::load(Output& p_source) noexcept
+	template<class Reader, class Source> Source& CoreAssetModel::load(Source& p_source) noexcept
 	{
 		if (Reader::getFormat(p_source, IID_CoreAssetModel))
 		{
