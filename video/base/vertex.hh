@@ -35,10 +35,10 @@ namespace video {
 
 		//! ----------------------------------------------------------------------
 
-		static void attach_pos(base_vertex *, GLuint, GLintptr, GLsizei) noexcept;
-		static void attach_nor(base_vertex *, GLuint, GLintptr, GLsizei) noexcept;
-		static void attach_tex(base_vertex *, GLuint, GLintptr, GLsizei) noexcept;
-		static void attach_skn(base_vertex *, GLuint, GLintptr, GLsizei) noexcept;
+		static void attach_pos(base_vertex *, GLuint, GLuint) noexcept;
+		static void attach_nor(base_vertex *, GLuint, GLuint) noexcept;
+		static void attach_tex(base_vertex *, GLuint, GLuint) noexcept;
+		static void attach_skn(base_vertex *, GLuint, GLuint) noexcept;
 
 		static void detach_pos(base_vertex *) noexcept;
 		static void detach_nor(base_vertex *) noexcept;
@@ -47,8 +47,11 @@ namespace video {
 
 		//! ----------------------------------------------------------------------
 
-		static void bind(base_vertex *) noexcept;
 		static void free(base_vertex *) noexcept;
+
+		//! ----------------------------------------------------------------------
+
+		static void bind(base_vertex const*) noexcept;
 	};
 
 	class cBaseVertex : private base_vertex
@@ -72,10 +75,10 @@ namespace video {
 
 		//! -----------------------------------------------------------------------------
 
-		inline void attach_pos(GLuint p_buffer, GLintptr p_offset, GLsizei p_stride) noexcept { base_vertex::attach_pos(this, p_buffer, p_offset, p_stride); }
-		inline void attach_nor(GLuint p_buffer, GLintptr p_offset, GLsizei p_stride) noexcept { base_vertex::attach_nor(this, p_buffer, p_offset, p_stride); }
-		inline void attach_tex(GLuint p_buffer, GLintptr p_offset, GLsizei p_stride) noexcept { base_vertex::attach_tex(this, p_buffer, p_offset, p_stride); }
-		inline void attach_skn(GLuint p_buffer, GLintptr p_offset, GLsizei p_stride) noexcept { base_vertex::attach_skn(this, p_buffer, p_offset, p_stride); }
+		inline void attach_pos(GLuint p_buffer, GLuint p_offset) noexcept { base_vertex::attach_pos(this, p_buffer, p_offset); }
+		inline void attach_nor(GLuint p_buffer, GLuint p_offset) noexcept { base_vertex::attach_nor(this, p_buffer, p_offset); }
+		inline void attach_tex(GLuint p_buffer, GLuint p_offset) noexcept { base_vertex::attach_tex(this, p_buffer, p_offset); }
+		inline void attach_skn(GLuint p_buffer, GLuint p_offset) noexcept { base_vertex::attach_skn(this, p_buffer, p_offset); }
 
 		inline void detach_pos() noexcept { base_vertex::detach_pos(this); }
 		inline void detach_nor() noexcept { base_vertex::detach_nor(this); }
@@ -84,15 +87,12 @@ namespace video {
 
 		//! -----------------------------------------------------------------------------
 
-		inline void bind() noexcept { base_vertex::bind(this); }
 		inline void free() noexcept { base_vertex::free(this); }
+
+		//! -----------------------------------------------------------------------------
+
+		inline void bind() const noexcept { base_vertex::bind(this); }
 	};
-
-
-	struct base_vertex_pos { uint32_t v[3]; };
-	struct base_vertex_nor { uint16_t v[2][2]; };
-	struct base_vertex_tex { uint16_t v[2][2]; };
-	struct base_vertex_skn { uint32_t v[2]; };
 
 } //! shape::video
 } //! shape

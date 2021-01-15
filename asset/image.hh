@@ -57,7 +57,7 @@ namespace shape
 	//!
 	//!
 
-	template<class tag> inline buffer_t image_alloc(const cImage& p_image)
+	template<class tag> inline typename buffer<tag>::type_t image_alloc(const cImage& p_image)
 	{
 		//!
 		//!

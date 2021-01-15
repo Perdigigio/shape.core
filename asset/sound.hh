@@ -59,7 +59,7 @@ namespace shape
 		size_t get_length() const noexcept;
 	};
 
-	template<class tag> inline buffer_t sound_alloc(const cSound& p_sound)
+	template<class tag> inline auto sound_alloc(const cSound& p_sound)
 	{
 		//!
 		//!

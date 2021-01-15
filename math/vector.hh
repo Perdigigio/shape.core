@@ -1,70 +1,200 @@
-#ifndef SHAPE_CORE_MATH_VECTOR_HH__GUARD
-#define SHAPE_CORE_MATH_VECTOR_HH__GUARD
+#ifndef SHAPE_MATH_VECTOR_HH__GUARD
+#define SHAPE_MATH_VECTOR_HH__GUARD
+
+#include "../type.hh"
 
 namespace shape
 {
-	template<class T, size_t N> struct vector
+	template<class T> static inline vector2<T> normalize(vector2<T> v) noexcept { return normalize(v, v); }
+	template<class T> static inline vector3<T> normalize(vector3<T> v) noexcept { return normalize(v, v); }
+	template<class T> static inline vector4<T> normalize(vector4<T> v) noexcept { return normalize(v, v); }
+
+	template<class T> static inline vector2<T> set2(T a) noexcept { return vector2<T>{ a, a      }; }
+	template<class T> static inline vector3<T> set3(T a) noexcept { return vector3<T>{ a, a, a   }; }
+	template<class T> static inline vector4<T> set4(T a) noexcept { return vector4<T>{ a, a, a, a}; }
+
+	template<class T> static inline vector3<T> cross(vector3<T> a, vector3<T> b) noexcept { return cross(a, a, b); }
+	template<class T> static inline vector4<T> cross(vector4<T> a, vector4<T> b) noexcept { return cross(a, a, b); }
+
+	template<class T> static inline vector2<T> add(vector2<T> a, vector2<T> b) noexcept { return add(a, a, b); }
+	template<class T> static inline vector3<T> add(vector3<T> a, vector3<T> b) noexcept { return add(a, a, b); }
+	template<class T> static inline vector4<T> add(vector4<T> a, vector4<T> b) noexcept { return add(a, a, b); }
+	template<class T> static inline vector2<T> sub(vector2<T> a, vector2<T> b) noexcept { return sub(a, a, b); }
+	template<class T> static inline vector3<T> sub(vector3<T> a, vector3<T> b) noexcept { return sub(a, a, b); }
+	template<class T> static inline vector4<T> sub(vector4<T> a, vector4<T> b) noexcept { return sub(a, a, b); }
+	template<class T> static inline vector2<T> mul(vector2<T> a, vector2<T> b) noexcept { return mul(a, a, b); }
+	template<class T> static inline vector3<T> mul(vector3<T> a, vector3<T> b) noexcept { return mul(a, a, b); }
+	template<class T> static inline vector4<T> mul(vector4<T> a, vector4<T> b) noexcept { return mul(a, a, b); }
+	template<class T> static inline vector2<T> div(vector2<T> a, vector2<T> b) noexcept { return div(a, a, b); }
+	template<class T> static inline vector3<T> div(vector3<T> a, vector3<T> b) noexcept { return div(a, a, b); }
+	template<class T> static inline vector4<T> div(vector4<T> a, vector4<T> b) noexcept { return div(a, a, b); }
+
+	//! ----------------------------------------------------------------------------------
+
+	template<class T> static inline vector2<T>& set(vector2<T> &r, T a) noexcept
 	{
-		T data[N];
-	};
-
-	namespace math
-	{
-		//!
-		//! COORD
-		//!
-
-		template<class T> static inline T& x(vector<T, 2>& v) { return v.data[0]; }
-		template<class T> static inline T& x(vector<T, 3>& v) { return v.data[0]; }
-		template<class T> static inline T& x(vector<T, 4>& v) { return v.data[0]; }
-		template<class T> static inline T& y(vector<T, 2>& v) { return v.data[1]; }
-		template<class T> static inline T& y(vector<T, 3>& v) { return v.data[1]; }
-		template<class T> static inline T& y(vector<T, 4>& v) { return v.data[1]; }
-		template<class T> static inline T& z(vector<T, 3>& v) { return v.data[2]; }
-		template<class T> static inline T& z(vector<T, 4>& v) { return v.data[2]; }
-		template<class T> static inline T& w(vector<T, 4>& v) { return v.data[3]; }
-
-		template<class T> static inline const T& x(const vector<T, 2>& v) { return v.data[0]; }
-		template<class T> static inline const T& x(const vector<T, 3>& v) { return v.data[0]; }
-		template<class T> static inline const T& x(const vector<T, 4>& v) { return v.data[0]; }
-		template<class T> static inline const T& y(const vector<T, 2>& v) { return v.data[1]; }
-		template<class T> static inline const T& y(const vector<T, 3>& v) { return v.data[1]; }
-		template<class T> static inline const T& y(const vector<T, 4>& v) { return v.data[1]; }
-		template<class T> static inline const T& z(const vector<T, 3>& v) { return v.data[2]; }
-		template<class T> static inline const T& z(const vector<T, 4>& v) { return v.data[2]; }
-		template<class T> static inline const T& w(const vector<T, 4>& v) { return v.data[3]; }
-
-		//!
-		//! COLOR
-		//!
-
-		template<class T> static inline T& r(vector<T, 3>& v) { return v.data[0]; }
-		template<class T> static inline T& r(vector<T, 4>& v) { return v.data[0]; }
-		template<class T> static inline T& g(vector<T, 3>& v) { return v.data[1]; }
-		template<class T> static inline T& g(vector<T, 4>& v) { return v.data[1]; }
-		template<class T> static inline T& b(vector<T, 3>& v) { return v.data[2]; }
-		template<class T> static inline T& b(vector<T, 4>& v) { return v.data[2]; }
-		template<class T> static inline T& a(vector<T, 4>& v) { return v.data[3]; }
-
-		template<class T> static inline const T& r(const vector<T, 3>& v) { return v.data[0]; }
-		template<class T> static inline const T& r(const vector<T, 4>& v) { return v.data[0]; }
-		template<class T> static inline const T& g(const vector<T, 3>& v) { return v.data[1]; }
-		template<class T> static inline const T& g(const vector<T, 4>& v) { return v.data[1]; }
-		template<class T> static inline const T& b(const vector<T, 3>& v) { return v.data[2]; }
-		template<class T> static inline const T& b(const vector<T, 4>& v) { return v.data[2]; }
-		template<class T> static inline const T& a(const vector<T, 4>& v) { return v.data[3]; }
+		x(r) = a;
+		y(r) = a; return r;
 	}
 
-	//!
-	//!
+	template<class T> static inline vector3<T>& set(vector3<T> &r, T a) noexcept
+	{
+		x(r) = a;
+		y(r) = a;
+		z(r) = a; return r;
+	}
 
-	typedef vector<float, 2> float2;
-	typedef vector<float, 3> float3;
-	typedef vector<float, 4> float4;
+	template<class T> static inline vector4<T>& set(vector4<T> &r, T a) noexcept
+	{
+		x(r) = a;
+		y(r) = a;
+		z(r) = a;
+		w(r) = a; return r;
+	}
 
-	typedef vector<uint16_t, 2> half2;
-	typedef vector<uint16_t, 3> half3;
-	typedef vector<uint16_t, 4> half4;
-}
+	//! ----------------------------------------------------------------------------------
 
+	template<class T> static inline vector2<T>& add(vector2<T> &r, vector2<T> a, vector2<T> b) noexcept
+	{
+		x(r) = x(a) + x(b);
+		y(r) = y(a) + y(b); return r;
+	}
+
+	template<class T> static inline vector3<T>& add(vector3<T> &r, vector3<T> a, vector3<T> b) noexcept
+	{
+		x(r) = x(a) + x(b);
+		y(r) = y(a) + y(b);
+		z(r) = z(a) + z(b); return r;
+	}
+
+	template<class T> static inline vector4<T>& add(vector4<T> &r, vector4<T> a, vector4<T> b) noexcept
+	{
+		x(r) = x(a) + x(b);
+		y(r) = y(a) + y(b);
+		z(r) = z(a) + z(b);
+		w(r) = w(a) + w(b); return r;
+	}
+
+	template<class T> static inline vector2<T>& sub(vector2<T> &r, vector2<T> a, vector2<T> b) noexcept
+	{
+		x(r) = x(a) - x(b);
+		y(r) = y(a) - y(b); return r;
+	}
+
+	template<class T> static inline vector3<T>& sub(vector3<T> &r, vector3<T> a, vector3<T> b) noexcept
+	{
+		x(r) = x(a) - x(b);
+		y(r) = y(a) - y(b);
+		z(r) = z(a) - z(b); return r;
+	}
+
+	template<class T> static inline vector4<T>& sub(vector4<T> &r, vector4<T> a, vector4<T> b) noexcept
+	{
+		x(r) = x(a) - x(b);
+		y(r) = y(a) - y(b);
+		z(r) = z(a) - z(b);
+		w(r) = w(a) - w(b); return r;
+	}
+
+	template<class T> static inline vector2<T>& mul(vector2<T> &r, vector2<T> a, vector2<T> b) noexcept
+	{
+		x(r) = x(a) * x(b);
+		y(r) = y(a) * y(b); return r;
+	}
+
+	template<class T> static inline vector3<T>& mul(vector3<T> &r, vector3<T> a, vector3<T> b) noexcept
+	{
+		x(r) = x(a) * x(b);
+		y(r) = y(a) * y(b);
+		z(r) = z(a) * z(b); return r;
+	}
+
+	template<class T> static inline vector4<T>& mul(vector4<T> &r, vector4<T> a, vector4<T> b) noexcept
+	{
+		x(r) = x(a) * x(b);
+		y(r) = y(a) * y(b);
+		z(r) = z(a) * z(b);
+		w(r) = w(a) * w(b); return r;
+	}
+
+	template<class T> static inline vector2<T>& div(vector2<T> &r, vector2<T> a, vector2<T> b) noexcept
+	{
+		x(r) = x(a) / x(b);
+		y(r) = y(a) / y(b); return r;
+	}
+
+	template<class T> static inline vector3<T>& div(vector3<T> &r, vector3<T> a, vector3<T> b) noexcept
+	{
+		x(r) = x(a) / x(b);
+		y(r) = y(a) / y(b);
+		z(r) = z(a) / z(b); return r;
+	}
+
+	template<class T> static inline vector4<T>& div(vector4<T> &r, vector4<T> a, vector4<T> b) noexcept
+	{
+		x(r) = x(a) / x(b);
+		y(r) = y(a) / y(b);
+		z(r) = z(a) / z(b);
+		w(r) = w(a) / w(b); return r;
+	}
+
+	//! ----------------------------------------------------------------------------------
+
+	template<class T> static inline T dot(vector2<T> a, vector2<T> b) noexcept
+	{
+		return  a.data[0] * b.data[0] + 
+			a.data[1] * b.data[1]; 
+	}
+
+	template<class T> static inline T dot(vector3<T> a, vector3<T> b) noexcept
+	{
+		return  a.data[0] * b.data[0] + 
+			a.data[1] * b.data[1] +
+			a.data[2] * b.data[2]; 
+	}
+
+	template<class T> static inline T dot(vector4<T> a, vector4<T> b) noexcept
+	{
+		return  a.data[0] * b.data[0] + 
+			a.data[1] * b.data[1] +
+			a.data[2] * b.data[2] +
+			a.data[3] * b.data[3]; 
+	}
+
+	template<class T> static inline vector3<T> cross(vector3<T> &r, vector3<T> a, vector3<T> b) noexcept
+	{
+		x(r) = y(a) * z(b) - z(a) * y(b);
+		y(r) = z(a) * x(b) - x(a) * z(b);
+		z(r) = x(a) * y(b) - y(a) * x(b); return r;
+	}
+
+	template<class T> static inline vector4<T> cross(vector4<T> &r, vector4<T> a, vector4<T> b) noexcept
+	{
+		x(r) = y(a) * z(b) - z(a) * y(b);
+		y(r) = z(a) * x(b) - x(a) * z(b);
+		z(r) = x(a) * y(b) - y(a) * x(b); return r;
+	}
+
+	//! ----------------------------------------------------------------------------------
+
+	template<class T> static inline T length_sqr(vector2<T> v) noexcept { return dot(v, v); }
+	template<class T> static inline T length_sqr(vector3<T> v) noexcept { return dot(v, v); }
+	template<class T> static inline T length_sqr(vector4<T> v) noexcept { return dot(v, v); }
+
+	template<class T> static inline T length(vector2<T> v) noexcept { return std::sqrt(length_sqr(v)); }
+	template<class T> static inline T length(vector3<T> v) noexcept { return std::sqrt(length_sqr(v)); }
+	template<class T> static inline T length(vector4<T> v) noexcept { return std::sqrt(length_sqr(v)); }
+
+	//! ----------------------------------------------------------------------------------
+
+	template<class T> static inline vector2<T>& normalize(vector2<T> &r, vector2<T> v) noexcept { return div(r, v, set2(length(v))); }
+	template<class T> static inline vector3<T>& normalize(vector3<T> &r, vector3<T> v) noexcept { return div(r, v, set3(length(v))); }
+	template<class T> static inline vector4<T>& normalize(vector4<T> &r, vector4<T> v) noexcept { return div(r, v, set4(length(v))); }
+
+
+} //! shape
+
+#ifdef SHAPE_SIMD
+#	include SHAPE_SIMD
+#endif
 #endif

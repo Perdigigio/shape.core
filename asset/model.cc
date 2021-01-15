@@ -1,61 +1,24 @@
 #include "model.hh"
 
-//!
-//!
-
 namespace shape
 {
-	static inline size_t get_bytes(const model_buffer *);
 
-	//!
-	//!
-
-	size_t cModelBuffer::get_stride() const noexcept
+	void cModel::realloc()
 	{
-		switch (vec)
-		{
-			case model_fourcc::VEC1: return 1 * get_bytes(this);
-			case model_fourcc::VEC2: return 2 * get_bytes(this);
-			case model_fourcc::VEC3: return 3 * get_bytes(this);
-			case model_fourcc::VEC4: return 4 * get_bytes(this);
-			case model_fourcc::MAT2: return 2 * 2 * get_bytes(this);
-			case model_fourcc::MAT3: return 3 * 3 * get_bytes(this);
-			case model_fourcc::MAT4: return 4 * 4 * get_bytes(this);
-		}
-
-		//!
-		//!
-
-		return 0;
+		m_pos = model_buffer_alloc<heap_t>(this->pos);
+		m_nor = model_buffer_alloc<heap_t>(this->nor);
+		m_tex = model_buffer_alloc<heap_t>(this->tex);
+		m_skn = model_buffer_alloc<heap_t>(this->skn);
+		m_idx = model_buffer_alloc<heap_t>(this->idx);
 	}
 
-	size_t cModelBuffer::get_length() const noexcept
+	void cModel::dispose()
 	{
-		//!
-		//!
-
-		return get_stride() * this->num;
+		m_idx.release();
+		m_skn.release();
+		m_tex.release();
+		m_nor.release();
+		m_pos.release();
 	}
 
-	//!
-	//!
-
-	size_t get_bytes(const model_buffer * p_buffer)
-	{
-		switch (p_buffer->fmt)
-		{
-			case model_fourcc::U32: return 4;
-			case model_fourcc::S32: return 4;
-			case model_fourcc::U16: return 2;
-			case model_fourcc::S16: return 2;
-			case model_fourcc::F16: return 2;
-			case model_fourcc::F32: return 4;
-		}
-
-		//!
-		//!
-
-		return 0;
-	}
-
-}
+} //! shape

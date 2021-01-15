@@ -7,90 +7,46 @@ namespace shape {
 namespace video {
 
 
-	static bool create_program(GLuint &, GLenum, const char *) noexcept;
+	static GLuint create_program(GLenum, const char *, GLint *) noexcept;
 
 	//!
 	//!
 
-	bool base_shader::init_vshader(base_shader *p_shader, const char *p_source) noexcept
+	GLuint base_shader::init_vshader(const char *p_source, GLint *p_status) noexcept { return create_program(GL_VERTEX_SHADER,          p_source, p_status); }
+	GLuint base_shader::init_hshader(const char *p_source, GLint *p_status) noexcept { return create_program(GL_TESS_CONTROL_SHADER,    p_source, p_status); }
+	GLuint base_shader::init_dshader(const char *p_source, GLint *p_status) noexcept { return create_program(GL_TESS_EVALUATION_SHADER, p_source, p_status); }
+	GLuint base_shader::init_gshader(const char *p_source, GLint *p_status) noexcept { return create_program(GL_GEOMETRY_SHADER,        p_source, p_status); }
+	GLuint base_shader::init_fshader(const char *p_source, GLint *p_status) noexcept { return create_program(GL_FRAGMENT_SHADER,        p_source, p_status); }
+
+	//! -----------------------------------------------------------
+
+	void base_shader::free(GLuint p_shader) noexcept
 	{
-		if (!p_shader || p_shader->vshader != GLuint{})
-		{
-			//!
-			//!
-
-			return false;
-		}
-
-		//!
-		//!
-
-		return create_program(p_shader->vshader, GL_VERTEX_SHADER, p_source);
-	}
-
-	bool base_shader::init_gshader(base_shader *p_shader, const char *p_source) noexcept
-	{
-		if (!p_shader || p_shader->gshader != GLuint{})
-		{
-			//!
-			//!
-
-			return false;
-		}
-
-		//!
-		//!
-
-		return create_program(p_shader->gshader, GL_GEOMETRY_SHADER, p_source);
-	}
-
-	bool base_shader::init_fshader(base_shader *p_shader, const char *p_source) noexcept
-	{
-		if (!p_shader || p_shader->fshader != GLuint{})
-		{
-			//!
-			//!
-
-			return false;
-		}
-
-		//!
-		//!
-
-		return create_program(p_shader->gshader, GL_GEOMETRY_SHADER, p_source);
+		glDeleteProgram(p_shader);
 	}
 
 	//! -----------------------------------------------------------
 
-	void base_shader::free(base_shader *p_shader) noexcept
+	GLuint create_program(GLenum p_target, const char *p_source, GLint *p_status) noexcept
 	{
-		glDeleteProgram(std::exchange(p_shader->vshader, {}));
-		glDeleteProgram(std::exchange(p_shader->gshader, {}));
-		glDeleteProgram(std::exchange(p_shader->fshader, {}));
-	}
-
-	//! -----------------------------------------------------------
-
-	bool create_program(GLuint &p_shader, GLenum p_stage, const char *p_source) noexcept
-	{
-		auto l_status = GL_TRUE;
-		auto l_shader = glCreateShaderProgramv(p_stage, 1, &p_source);
+		auto l_shader = glCreateShaderProgramv(p_target, 1, &p_source);
 
 		//!
 		//!
 
-		if (l_shader)
+		if (l_shader && p_status)
 		{
 			//!
+			//! ALLOCATE LOG BUFFER
 			//!
 
-			glGetProgramiv(l_shader, GL_LINK_STATUS, &l_status);
+			glGetProgramiv(l_shader, GL_LINK_STATUS, p_status);
 		}
 
 		//!
 		//!
 
-		return (l_shader = p_shader, glIsProgram(l_shader));
+		return l_shader;
 	}
 
 

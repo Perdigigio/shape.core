@@ -29,5 +29,6 @@ namespace shape
 	//!
 
 	std::ostream& log_fail(const char * p_file, int p_line) { return std::cerr << "\033[31m[EE] "; }
+	std::ostream& log_warn(const char * p_file, int p_line) { return std::cerr << "\033[35m[WW] "; }
 	std::ostream& log_info(const char * p_file, int p_line) { return std::clog << "\033[36m[II] "; }
 }

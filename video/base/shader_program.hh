@@ -17,6 +17,10 @@ namespace video {
 
 		//! -------------------------------------------------------------
 
+		static bool init(base_shader_program *) noexcept;
+
+		//! -------------------------------------------------------------
+
 		static void bind_vshader(base_shader_program *, GLuint) noexcept;
 		static void bind_hshader(base_shader_program *, GLuint) noexcept;
 		static void bind_dshader(base_shader_program *, GLuint) noexcept;
@@ -25,9 +29,9 @@ namespace video {
 
 		//! -------------------------------------------------------------
 
-		static void init(base_shader_program *) noexcept;
 		static void free(base_shader_program *) noexcept;
-		
+		static void grab(base_shader_program *) noexcept;
+
 		//! -------------------------------------------------------------
 
 		static void bind(const base_shader_program *) noexcept;
@@ -35,6 +39,7 @@ namespace video {
 
 	class cBaseShaderProgram : private base_shader_program
 	{
+	public:
 		inline cBaseShaderProgram() noexcept
 		{
 			this->program = {};
@@ -47,6 +52,10 @@ namespace video {
 
 		//! ---------------------------------------------------------------------------------------
 
+		inline bool init() noexcept { return base_shader_program::init(this); }
+
+		//! ---------------------------------------------------------------------------------------
+
 		inline void bind_vshader(GLuint s) noexcept { base_shader_program::bind_vshader(this, s); }
 		inline void bind_hshader(GLuint s) noexcept { base_shader_program::bind_hshader(this, s); }
 		inline void bind_dshader(GLuint s) noexcept { base_shader_program::bind_dshader(this, s); }
@@ -55,12 +64,13 @@ namespace video {
 
 		//! ---------------------------------------------------------------------------------------
 
-		inline void init() noexcept { base_shader_program::init(this); }
 		inline void free() noexcept { base_shader_program::free(this); }
+		inline void grab() noexcept { base_shader_program::grab(this); }
 
 		//! ---------------------------------------------------------------------------------------
 
 		inline void bind() const noexcept { base_shader_program::bind(this); }
+
 
 		//!
 		//! GETTERS
@@ -68,8 +78,8 @@ namespace video {
 
 		inline GLuint get_program() const noexcept { return this->program; }
 		inline GLuint get_vshader() const noexcept { return this->vshader; }
-		inline GLuint get_gshader() const noexcept { return this->hshader; }
-		inline GLuint get_gshader() const noexcept { return this->dshader; }
+		inline GLuint get_hshader() const noexcept { return this->hshader; }
+		inline GLuint get_dshader() const noexcept { return this->dshader; }
 		inline GLuint get_gshader() const noexcept { return this->gshader; }
 		inline GLuint get_fshader() const noexcept { return this->fshader; }
 	};

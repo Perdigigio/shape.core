@@ -1,25 +1,20 @@
 #include "vertex.hh"
 
 //!
-//! SHORTCUTS
-//!
-
-#define ATTACH_BUFFER(s) glVertexArrayVertexBuffer(p_vertex->layout, (s), b, o, s);
-#define DETACH_BUFFER(s) glVertexArrayVertexBuffer(p_vertex->layout, (s), 0, 0, 0);
-
-//!
 //!
 
 namespace shape {
 namespace video {
+
+	template<class T, GLuint s> static void buffer_bind(GLuint, GLuint, GLuint);
 
 	//!
 	//!
 
 	bool base_vertex::init(base_vertex *p_vertex) noexcept
 	{
-#		ifndef NDEBUG
-		if (!p_vertex || p_vertex->layout != GLuint{})
+#		ifndef DEBUG
+		if (!p_vertex || glIsVertexArray(p_vertex->layout))
 		{
 			//!
 			//!
@@ -82,21 +77,38 @@ namespace video {
 		glEnableVertexArrayAttrib(p_vertex->layout, 6);
 	}
 
-	void base_vertex::attach_pos(base_vertex *p_vertex, GLuint b, GLintptr o, GLsizei s) noexcept { ATTACH_BUFFER(0); }
-	void base_vertex::attach_nor(base_vertex *p_vertex, GLuint b, GLintptr o, GLsizei s) noexcept { ATTACH_BUFFER(1); }
-	void base_vertex::attach_tex(base_vertex *p_vertex, GLuint b, GLintptr o, GLsizei s) noexcept { ATTACH_BUFFER(2); }
-	void base_vertex::attach_skn(base_vertex *p_vertex, GLuint b, GLintptr o, GLsizei s) noexcept { ATTACH_BUFFER(3); }
+	void base_vertex::attach_pos(base_vertex *p_vertex, GLuint p_buffer, GLuint p_offset) noexcept { buffer_bind<base_vtx::pos_t, 0>(p_vertex->layout, p_buffer, p_offset); }
+	void base_vertex::attach_nor(base_vertex *p_vertex, GLuint p_buffer, GLuint p_offset) noexcept { buffer_bind<base_vtx::nor_t, 1>(p_vertex->layout, p_buffer, p_offset); }
+	void base_vertex::attach_tex(base_vertex *p_vertex, GLuint p_buffer, GLuint p_offset) noexcept { buffer_bind<base_vtx::tex_t, 2>(p_vertex->layout, p_buffer, p_offset); }
+	void base_vertex::attach_skn(base_vertex *p_vertex, GLuint p_buffer, GLuint p_offset) noexcept { buffer_bind<base_vtx::skn_t, 3>(p_vertex->layout, p_buffer, p_offset); }
 
-	void base_vertex::detach_pos(base_vertex *p_vertex) noexcept { DETACH_BUFFER(0); }
-	void base_vertex::detach_nor(base_vertex *p_vertex) noexcept { DETACH_BUFFER(1); }
-	void base_vertex::detach_tex(base_vertex *p_vertex) noexcept { DETACH_BUFFER(2); }
-	void base_vertex::detach_skn(base_vertex *p_vertex) noexcept { DETACH_BUFFER(3); }
+	void base_vertex::detach_pos(base_vertex *p_vertex) noexcept { glVertexArrayVertexBuffer(p_vertex->layout, 0, 0, 0, 0); }
+	void base_vertex::detach_nor(base_vertex *p_vertex) noexcept { glVertexArrayVertexBuffer(p_vertex->layout, 1, 0, 0, 0); }
+	void base_vertex::detach_tex(base_vertex *p_vertex) noexcept { glVertexArrayVertexBuffer(p_vertex->layout, 2, 0, 0, 0); }
+	void base_vertex::detach_skn(base_vertex *p_vertex) noexcept { glVertexArrayVertexBuffer(p_vertex->layout, 3, 0, 0, 0); }
+
+	void base_vertex::bind(base_vertex const *p_vertex) noexcept
+	{
+		glBindVertexArray(p_vertex->layout);
+	}
 
 	void base_vertex::free(base_vertex *p_vertex) noexcept
 	{
 		if (p_vertex)
 			glDeleteVertexArrays(1, &p_vertex->layout);
 	}
+
+	//!
+	//!
+
+	template<class T, GLuint s> void buffer_bind(GLuint p_handle, GLuint p_buffer, GLuint p_offset)
+	{
+		//!
+		//!
+
+		glVertexArrayVertexBuffer(p_handle, s, p_buffer, p_offset * sizeof(T), sizeof(T));
+	}
+
 
 } //! shape::video
 } //! shape
