@@ -6,83 +6,70 @@
 
 namespace shape
 {
-	constexpr uuid_t IID_CoreAssetModel = { 0x1cd8ed99, 0x2293, 0x496e, 0xae9d, 0x62e0f6beea3a };
 
-	//!
-	//! CORE MODEL
-	//!
+	struct model_fourcc
+	{
+		static constexpr uint32_t U16 = fourcc('U', '1', '6', ' ');
+		static constexpr uint32_t U32 = fourcc('U', '3', '2', ' ');
+		static constexpr uint32_t S16 = fourcc('S', '1', '6', ' ');
+		static constexpr uint32_t S32 = fourcc('S', '3', '2', ' ');
+		static constexpr uint32_t F16 = fourcc('F', '1', '6', ' ');
+		static constexpr uint32_t F32 = fourcc('F', '3', '2', ' ');
 
-	class CoreAssetModel
+		//! ------------------ VECTOR TYPES -----------------------
+
+		static constexpr uint32_t VEC1 = fourcc('V', 'E', 'C', '1');
+		static constexpr uint32_t VEC2 = fourcc('V', 'E', 'C', '2');
+		static constexpr uint32_t VEC3 = fourcc('V', 'E', 'C', '3');
+		static constexpr uint32_t VEC4 = fourcc('V', 'E', 'C', '4');
+		static constexpr uint32_t MAT2 = fourcc('M', 'A', 'T', '2');
+		static constexpr uint32_t MAT3 = fourcc('M', 'A', 'T', '3');
+		static constexpr uint32_t MAT4 = fourcc('M', 'A', 'T', '4');
+	};
+
+	struct model_buffer
+	{
+		uint32_t fmt;
+		uint32_t vec;
+		uint32_t num;
+	};
+
+	class cModelBuffer : private model_buffer
 	{
 	public:
-		inline CoreAssetModel()
+		inline cModelBuffer(uint32_t fmt, uint32_t vec, uint32_t num) noexcept
 		{
-			m_vertsCount = uint32_t();
-			m_facesCount = uint32_t();
-			m_edgesCount = uint32_t();
+			this->fmt = fmt;
+			this->vec = vec;
+			this->num = num;
 		}
 
-		/**
-		 * @param vertsCount Total model vertex count
-		 * @param facesCount Total model faces count
-		 * @param edgesCount Per face edge count
-		 */
-		inline CoreAssetModel(uint32_t p_vertsCount, uint32_t p_facesCount, uint32_t p_edgesCount)
-		{
-			m_vertsCount = p_vertsCount;
-			m_facesCount = p_facesCount;
-			m_edgesCount = p_edgesCount;
-		}
-
-		template<class Reader, class Output> Output& load(Output&) noexcept;
-		template<class Reader, class Output> Output& save(Output&) noexcept;
-
 		//!
-		//! GETTERS
+		//!
 		//!
 
-		uint32_t getVertsCount() const noexcept { return m_vertsCount; }
-		uint32_t getFacesCount() const noexcept { return m_facesCount; }
-		uint32_t getEdgesCount() const noexcept { return m_edgesCount; }
+		inline uint32_t get_fmt() const noexcept { return this->fmt; }
+		inline uint32_t get_vec() const noexcept { return this->vec; }
+		inline uint32_t get_num() const noexcept { return this->num; }
 
-	private:
-		uint32_t m_vertsCount;
-		uint32_t m_facesCount;
-		uint32_t m_edgesCount;
+		//!
+		//!
+
+		size_t get_stride() const noexcept;
+		size_t get_length() const noexcept;
 	};
 
 	//!
 	//!
 
-	template<class Reader, class Source> Source& CoreAssetModel::load(Source& p_source) noexcept
+	template<class tag> buffer_t model_buffer_alloc(const cModelBuffer & p_buffer)
 	{
-		if (Reader::getFormat(p_source, IID_CoreAssetModel))
-		{
-			Reader::get(p_source, m_vertsCount);
-			Reader::get(p_source, m_facesCount);
-			Reader::get(p_source, m_edgesCount);
-		}
-
 		//!
 		//!
 
-		return Reader::end(p_source);
+		return buffer_alloc<tag>(p_buffer.get_length());
 	}
 
-	template<class Writer, class Output> Output& CoreAssetModel::save(Output& p_output) noexcept
-	{
-		if (Writer::setFormat(p_output, IID_CoreAssetModel))
-		{
-			Writer::set(p_output, m_vertsCount);
-			Writer::set(p_output, m_facesCount);
-			Writer::set(p_output, m_edgesCount);
-		}
-
-		//!
-		//!
-
-		return Writer::end(p_output);
-	}
 }
 
 #endif

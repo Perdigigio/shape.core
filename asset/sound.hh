@@ -6,75 +6,65 @@
 
 namespace shape
 {
-	constexpr uuid_t IID_CoreAssetSound = { 0xfb9500a7, 0x0a17, 0x49b7, 0x9d00, 0x108ea156be51 };
+	struct sound_format
+	{
+		static constexpr uint32_t PCMa = fourcc('P', 'C', 'M', 'a'); //! BYTE
+		static constexpr uint32_t PCMb = fourcc('P', 'C', 'M', 'b'); //! WORD
+		static constexpr uint32_t PCMc = fourcc('P', 'C', 'M', 'c'); //! UINT - 24 bit
+		static constexpr uint32_t H265 = fourcc('H', '2', '6', '5');
+		static constexpr uint32_t FLAC = fourcc('F', 'L', 'A', 'C');
+	};
+
+	struct sound
+	{
+		uint32_t fmt;
+		uint32_t chn;
+		uint32_t sps;
+		uint32_t len;
+	};
 
 	//!
 	//! CORE SOUND
 	//!
 
-	class CoreAssetSound
+	class cSound : private sound
 	{
 	public:
-		inline CoreAssetSound()
+		/**
+		* @param fmt
+		* @param chn
+		* @param sps
+		* @param len
+		*/
+		inline cSound(uint32_t fmt, uint32_t chn, uint32_t sps, uint32_t len) noexcept
 		{
-			m_bitset = uint32_t();
-			m_length = uint32_t();
-			m_stride = uint32_t();
-			m_sampleFrequency = uint32_t();
+			this->fmt = fmt;
+			this->chn = chn;
+			this->sps = sps;
+			this->len = len;
 		}
 
-		template<class Reader, class Source> Source& load(Source&);
-		template<class Writer, class Output> Output& save(Output&);
-
 		//!
-		//! GETTERS
 		//!
 
-		inline uint32_t getBitset() const { return m_bitset; }
-		inline uint32_t getLength() const { return m_length; }
-		inline uint32_t getStride() const { return m_stride; }
-		inline uint32_t getSampleFrequency() const { return m_sampleFrequency; }
+		inline uint32_t get_fmt() const noexcept { return this->fmt; }
+		inline uint32_t get_chn() const noexcept { return this->chn; }
+		inline uint32_t get_sps() const noexcept { return this->sps; }
+		inline uint32_t get_len() const noexcept { return this->len; }
 
-	private:
-		uint32_t m_bitset;
-		uint32_t m_stride;
-		uint32_t m_length;
-		uint32_t m_sampleFrequency;
+		//!
+		//!
+
+		size_t get_stride() const noexcept;
+		size_t get_length() const noexcept;
 	};
 
-	//!
-	//!
-
-	template<class Reader, class Source> Source& CoreAssetSound::load(Source& p_source)
+	template<class tag> inline buffer_t sound_alloc(const cSound& p_sound)
 	{
-		if (Reader::getFormat(p_source, IID_CoreAssetSound))
-		{
-			Reader::get(p_source, m_bitset);
-			Reader::get(p_source, m_stride);
-			Reader::get(p_source, m_length);
-			Reader::get(p_source, m_sampleFrequency);
-		}
-
 		//!
 		//!
 
-		return p_source;
-	}
-
-	template<class Writer, class Output> Output& CoreAssetSound::save(Output& p_output)
-	{
-		if (Writer::setFormat(p_output, IID_CoreAssetSound))
-		{
-			Writer::set(p_outset, m_bitset);
-			Writer::set(p_outset, m_stride);
-			Writer::set(p_outset, m_length);
-			Writer::set(p_outset, m_sampleFrequency);
-		}
-
-		//!
-		//!
-
-		return p_output;
+		return buffer_alloc<tag>(p_sound.get_length());
 	}
 
 }

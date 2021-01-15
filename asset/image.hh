@@ -6,98 +6,64 @@
 
 namespace shape
 {
-	constexpr uuid_t IID_CoreAssetImage = { 0x61b6c2ed, 0x36b3, 0x4d34, 0xba77, 0x676b11cb8b69 };
+	struct image_fourcc
+	{
+		static constexpr auto BM16 = fourcc('B', 'M', '1', '6'); //! b:5 g:6 r:5
+		static constexpr auto BM24 = fourcc('B', 'M', '2', '4'); //! b:8 g:8 r:8
+		static constexpr auto BM32 = fourcc('B', 'M', '3', '2'); //! b:8 g:8 r:8 a:8
+		static constexpr auto DXT1 = fourcc('D', 'X', 'T', '1'); //! b:5 g:6 r:5
+		static constexpr auto DXT3 = fourcc('D', 'X', 'T', '3'); //! b:5 g:6 r:5 a:4
+		static constexpr auto DXT5 = fourcc('D', 'X', 'T', '5'); //! b:5 g:6 r:5 a:8
+		static constexpr auto ATI1 = fourcc('A', 'T', 'I', '1'); //! r:8
+		static constexpr auto ATI2 = fourcc('A', 'T', 'I', '2'); //! r:8 g:8
+	};
 
-	//!
-	//! CORE IMAGE
-	//!
+	struct image
+	{
+		uint32_t fmt;
+		uint32_t wth;
+		uint32_t hth;
+	};
 
-	class CoreAssetImage
+	class cImage : private image
 	{
 	public:
-		inline CoreAssetImage() noexcept
-		{
-			m_levels = uint16_t();
-			m_layers = uint16_t();
-			m_w = uint16_t();
-			m_h = uint16_t();
-			m_d = uint16_t();
-		}
-
 		/**
-		 * @param levels
-		 * @param layers
-		 * @param w
-		 * @param h
-		 * @param d
+		 * @param fmt
+		 * @param wth
+		 * @param hth
 		 */
-		inline CoreAssetImage(uint16_t p_levels, uint16_t p_layers, uint16_t p_w, uint16_t p_h, uint16_t p_d) noexcept
+		inline cImage(uint32_t fmt, uint32_t wth, uint32_t hth) noexcept
 		{
-			m_levels = p_levels;
-			m_layers = p_layers;
-			m_w = p_w;
-			m_h = p_h;
-			m_d = p_d;
+			this->fmt = fmt;
+			this->wth = wth;
+			this->hth = hth;
 		}
 
-		template<class Reader, class Output> Output& load(Output&) noexcept;
-		template<class Reader, class Output> Output& save(Output&) noexcept;
-
 		//!
-		//! GETTERS
 		//!
 
-		inline uint16_t getLevels() const noexcept { return m_levels; }
-		inline uint16_t getLayers() const noexcept { return m_layers; }
-		inline uint16_t getW() const noexcept { return m_w; }
-		inline uint16_t getH() const noexcept { return m_h; }
-		inline uint16_t getD() const noexcept { return m_d; }
+		inline uint32_t get_fmt() const noexcept { return this->fmt; }
+		inline uint32_t get_wth() const noexcept { return this->wth; }
+		inline uint32_t get_hth() const noexcept { return this->hth; }
 
-	private:
-		uint16_t m_levels;
-		uint16_t m_layers;
-		uint16_t m_w;
-		uint16_t m_h;
-		uint16_t m_d;
+		//!
+		//!
+
+		size_t get_stride() const noexcept;
+		size_t get_length() const noexcept;
 	};
 
 	//!
 	//!
 
-	template<class Reader, class Output> Output& CoreAssetImage::load(Output& p_source) noexcept
+	template<class tag> inline buffer_t image_alloc(const cImage& p_image)
 	{
-		if (Reader::getFormat(p_source, IID_CoreAssetImage))
-		{
-			Reader::get(p_source, m_levels);
-			Reader::get(p_source, m_layers);
-			Reader::get(p_source, m_w);
-			Reader::get(p_source, m_h);
-			Reader::get(p_source, m_d);
-		}
-
 		//!
 		//!
 
-		return Reader::end(p_source);
+		return buffer_alloc<tag>(p_image.get_length());
 	}
-
-	template<class Writer, class Output> Output& CoreAssetImage::save(Output& p_output) noexcept
-	{
-		if (Writer::setFormat(p_output, IID_CoreAssetImage))
-		{
-			Writer::set(p_output, m_levels);
-			Writer::set(p_output, m_layers);
-			Writer::set(p_output, m_w);
-			Writer::set(p_output, m_h);
-			Writer::set(p_output, m_d);
-		}
-
-		//!
-		//!
-
-		return Writer::end(p_output);
-	}
-
 }
 
 #endif

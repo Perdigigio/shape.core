@@ -1,77 +1,133 @@
+#include "base.hh"
+
+#include <windows.h>
+
+
 #include "asset/image.hh"
+#include "asset/model.hh"
 
-#include "stream/reader.hh"
-#include "stream/writer.hh"
+#include "io/reader.hh"
+#include "io/writer.hh"
 
-#include "video/device.hh"
-#include "video/buffer.hh"
+#include "video/base/device.hh"
+#include "video/base/shader.hh"
+#include "video/base/vertex.hh"
 
-struct REFDevice
-{
-	typedef typename intptr_t handle_t;
-	typedef typename uint32_t offset_t;
-	typedef typename uint32_t length_t;
-	typedef typename uint32_t bitset_t;
 
-	static int grab(intptr_t h)
-	{
-		//!
-		//!
 
-		return (h == 0) ? 0 : ++(*(int *)h);
-	}
-
-	static int drop(intptr_t h)
-	{
-		int ref = (h == 0) ? 0 : --(*(int *)h);
-
-		//!
-		//!
-
-		if (ref == 0)
-		{
-			delete (int *)h;
-		}
-
-		//!
-		//!
-
-		return ref;
-	}
-};
-
-#include <iostream>
 #include <sstream>
+#include <iostream>
 
+#define WINDOW_X CW_USEDEFAULT
+#define WINDOW_Y CW_USEDEFAULT
+#define WINDOW_W 800
+#define WINDOW_H 600
+
+LRESULT CALLBACK Proc(HWND, UINT, WPARAM, LPARAM);
+HRESULT CALLBACK Init(HWND);
 
 int main()
 {
-	std::stringstream l_I;
+	WNDCLASS g_class = {};
 
-	uint32_t l_flags =
-		shape::CoreAssetImageFlags_HasW |
-		shape::CoreAssetImageFlags_HasH |
-		shape::CoreAssetImageFlags_HasD;
+	g_class.lpfnWndProc   = Proc;
+	g_class.lpszClassName = TEXT("render_window");
+	g_class.hInstance     = GetModuleHandle(NULL);
 
-	shape::CoreAssetImage l_OImage{ l_flags, 8, 2, 2, 2 };
-	shape::CoreAssetImage l_IImage;
+	if (!RegisterClass(&g_class))
+	{
+		
+		//!
+		//!
 
-	l_OImage.save<shape::CoreStreamWriter>(l_I.seekp(0));
-	l_IImage.load<shape::CoreStreamReader>(l_I.seekg(0));
+		return LOG_FAIL("Failed to RegisterClass()"), EXIT_FAILURE;
+	}
 
-	if (l_IImage.save<shape::CoreStreamWriter>(std::cout)) shape::CoreError::error("Error (i'm lying)");
-	if (!l_IImage.save<shape::CoreStreamWriter>(std::cout)) shape::CoreError::error("Error (not lying)");
+	PIXELFORMATDESCRIPTOR l_pfd =
+	{
+		sizeof PIXELFORMATDESCRIPTOR, 1, PFD_DRAW_TO_WINDOW | PFD_DOUBLEBUFFER | PFD_SUPPORT_OPENGL, PFD_TYPE_RGBA,
+		24, 0, 0, 0, 0, 0, 0, 8, 0,
+		 0, 0, 0, 0, 0,
+		 0, 0, 0,
+		PFD_MAIN_PLANE, 0, 0, 0, 0
+	};
+
+	HWND l_hwnd = CreateWindow(TEXT("render_window"), TEXT("D3D11"), WS_VISIBLE,
+		WINDOW_X, WINDOW_Y,
+		WINDOW_W, WINDOW_H, NULL, NULL, NULL, NULL);
+
+	if (!l_hwnd)
+	{
+		return LOG_FAIL("Cannot open window"), EXIT_FAILURE;
+	}
+
+	HDC l_hdc = GetDC(l_hwnd);
+
+	if (!SetPixelFormat(l_hdc, ChoosePixelFormat(l_hdc, &l_pfd), &l_pfd))
+	{
+		//!
+		//!
+
+		return LOG_FAIL("Failed to SetPixelFormat()"), EXIT_FAILURE;
+	}
+
+	HGLRC l_glc = wglCreateContext(l_hdc);
+
+	if (wglMakeCurrent(l_hdc, l_glc))
+	{
+		shape::video::cBaseDevice{}.init();
+	}
+
+	shape::video::cBaseVertex l_vertex;
+
+	if (l_vertex.init())
+	{
+		l_vertex.enable_nor();
+		l_vertex.enable_tex();
+		l_vertex.enable_skn();
+	}
+
+	//!
+	//! TEST HACK
+	//!
+
+	MSG l_msg;
+	INT l_run = TRUE;
+
+	glClearColor(1, 0, 0, 0);
+
+	do
+	{
+		while(PeekMessage(&l_msg, NULL, 0, 0, PM_REMOVE))
+		{
+			if (l_msg.message == WM_QUIT)
+			{
+				l_run = FALSE;
+			}
+
+			 DispatchMessage(&l_msg);
+			TranslateMessage(&l_msg);
+		}
+
+		glClear(GL_COLOR_BUFFER_BIT);
+
+		SwapBuffers(l_hdc);
+	} while(l_run);
 
 
-	int * _1 = new int(1);
-	int * _2 = new int(1);
-
-	shape::CoreVideoDevice<REFDevice> l_device1((intptr_t)(_1));
-	shape::CoreVideoDevice<REFDevice> l_device2((intptr_t)(_2));
-	shape::CoreVideoDevice<REFDevice> l_device3;
-
-	l_device3 = l_device1;
-	l_device2 = l_device1;
 
 	return 0;
+}
+
+LRESULT CALLBACK Proc(HWND a, UINT b, WPARAM c, LPARAM d)
+{
+	if (b == WM_CLOSE)
+	{
+		PostQuitMessage(0);
+	}
+
+	//!
+	//!
+
+	return DefWindowProc(a, b, c, d);
 }
