@@ -6,16 +6,20 @@ include(GNUInstallDirs)
 
 add_library(shape_core STATIC
 	asset_image.cc
-	asset_model_buffer.cc
+	asset_image_reader.cc
+	asset_image_writer.cc
 	asset_model.cc
+	asset_model_reader.cc
+	asset_model_writer.cc
 	asset_sound.cc
-	asset_reader_model.cc
-	asset_writer_model.cc
 	base.cc
+	type.cc
 	io_reader.cc
 	io_writer.cc)
 
 add_library(shape_core_video STATIC
+	video_image.cc
+	video_model.cc
 	video_gl_glad.c
 	video_gl_base_device.cc
 	video_gl_base_framebuffer.cc
@@ -49,11 +53,10 @@ install(TARGETS shape_core_video EXPORT core_video COMPONENT core-video-librarie
 
 install(FILES
 	asset_image.hh
-	asset_model_buffer.hh
 	asset_model.hh
+	asset_model_reader.hh
+	asset_model_writer.hh
 	asset_sound.hh
-	asset_reader_model.hh
-	asset_writer_model.hh
 	base.hh
 	io_reader.hh
 	io_writer.hh

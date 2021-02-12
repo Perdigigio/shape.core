@@ -9,16 +9,19 @@
 
 namespace shape
 {
-	template<class T> bool write(std::ostream&, T const &);
+	struct writer
+	{
+		template<class T> static std::ostream & write(std::ostream&, const T &);
+	};
 
 	//! ----------------- INTEGER TYPES -----------------------
 
-	template<> bool write<uint16_t>(std::ostream&, uint16_t const &);
-	template<> bool write<uint32_t>(std::ostream&, uint32_t const &);
-	template<> bool write<uint64_t>(std::ostream&, uint64_t const &);
-	template<> bool write<sint16_t>(std::ostream&, sint16_t const &);
-	template<> bool write<sint32_t>(std::ostream&, sint32_t const &);
-	template<> bool write<sint64_t>(std::ostream&, sint64_t const &);
+	template<> std::ostream & writer::write(std::ostream&, const uint16_t &);
+	template<> std::ostream & writer::write(std::ostream&, const uint32_t &);
+	template<> std::ostream & writer::write(std::ostream&, const uint64_t &);
+	template<> std::ostream & writer::write(std::ostream&, const sint16_t &);
+	template<> std::ostream & writer::write(std::ostream&, const sint32_t &);
+	template<> std::ostream & writer::write(std::ostream&, const sint64_t &);
 
 }
 

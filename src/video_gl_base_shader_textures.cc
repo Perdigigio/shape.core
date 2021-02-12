@@ -5,7 +5,7 @@ namespace video {
 
 	void base_shader_textures::bind(base_shader_textures const *p_tex) noexcept
 	{
-		const GLuint l_textures[] =
+		const GLuint l_textures[4] =
 		{
 			p_tex->albedo,
 			p_tex->normal,
@@ -16,7 +16,7 @@ namespace video {
 		//!
 		//!
 
-		glBindTextures(0, arraysize<GLsizei>(l_textures), l_textures);
+		glBindTextures(0, 4, l_textures);
 	}
 
 } //! shape::video

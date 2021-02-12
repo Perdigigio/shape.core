@@ -32,11 +32,6 @@ namespace shape
 	//!
 	//!
 
-	template<class T, class O, T N> static inline constexpr T arraysize(const O(&)[N])
-	{
-		return N;
-	}
-
 	template<class T> static inline constexpr T align(T size, T base) noexcept
 	{
 		//!
@@ -118,36 +113,6 @@ namespace shape
 	{
 		const char * what() const noexcept override { return "shape::failure"; }
 	};
-
-	//!
-	//!
-	//!
-
-	template<class T> struct on_scope_exit_t
-	{
-		inline on_scope_exit_t() = delete;
-		inline on_scope_exit_t(const on_scope_exit_t &) = delete;
-		inline on_scope_exit_t(on_scope_exit_t && p_other) = default;
-		inline on_scope_exit_t(T && p_callable) noexcept : m_callable(p_callable) {}
-
-		on_scope_exit_t& operator=(const on_scope_exit_t &) noexcept = delete;
-		on_scope_exit_t& operator=(on_scope_exit_t &&) noexcept = default;
-
-		inline ~on_scope_exit_t() noexcept
-		{
-			m_callable();
-		}
-
-		T m_callable;
-	};
-
-	template<class T> static inline on_scope_exit_t<T> on_scope_exit(T && p_callable) noexcept
-	{
-		//!
-		//!
-
-		return on_scope_exit_t<T>{ std::forward<T>(p_callable) };
-	}
 
 } // namespace shape
 

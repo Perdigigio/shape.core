@@ -21,7 +21,12 @@ namespace video {
 
 	struct base_vertex
 	{
-		GLuint layout;
+		GLuint vao;
+		GLuint pos;
+		GLuint nor;
+		GLuint tex;
+		GLuint skn;
+		GLuint idx;
 
 		//! ----------------------------------------------------------------------
 
@@ -40,10 +45,17 @@ namespace video {
 		static void attach_tex(base_vertex *, GLuint, GLuint) noexcept;
 		static void attach_skn(base_vertex *, GLuint, GLuint) noexcept;
 
+		//! ----------------------------------------------------------------------
+
+		static void attach_idx(base_vertex *, GLuint) noexcept;
+
+		//! ----------------------------------------------------------------------
+
 		static void detach_pos(base_vertex *) noexcept;
 		static void detach_nor(base_vertex *) noexcept;
 		static void detach_tex(base_vertex *) noexcept;
 		static void detach_skn(base_vertex *) noexcept;
+		static void detach_idx(base_vertex *) noexcept;
 
 		//! ----------------------------------------------------------------------
 
@@ -59,7 +71,12 @@ namespace video {
 	public:
 		inline cBaseVertex() noexcept
 		{
-			this->layout = {};
+			this->vao = {};
+			this->pos = {};
+			this->nor = {};
+			this->tex = {};
+			this->skn = {};
+			this->idx = {};
 		}
 
 
@@ -80,10 +97,17 @@ namespace video {
 		inline void attach_tex(GLuint p_buffer, GLuint p_offset) noexcept { base_vertex::attach_tex(this, p_buffer, p_offset); }
 		inline void attach_skn(GLuint p_buffer, GLuint p_offset) noexcept { base_vertex::attach_skn(this, p_buffer, p_offset); }
 
+		//! -----------------------------------------------------------------------------
+
+		inline void attach_idx(GLuint p_buffer) noexcept { base_vertex::attach_idx(this, p_buffer); }
+
+		//! -----------------------------------------------------------------------------
+
 		inline void detach_pos() noexcept { base_vertex::detach_pos(this); }
 		inline void detach_nor() noexcept { base_vertex::detach_nor(this); }
 		inline void detach_tex() noexcept { base_vertex::detach_tex(this); }
 		inline void detach_skn() noexcept { base_vertex::detach_skn(this); }
+		inline void detach_idx() noexcept { base_vertex::detach_idx(this); }
 
 		//! -----------------------------------------------------------------------------
 

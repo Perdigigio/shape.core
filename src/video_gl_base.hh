@@ -3,26 +3,10 @@
 
 #include "base.hh"
 #include "type.hh"
+#include "math.hh"
 
 namespace shape {
 namespace video {
-
-	struct pixel
-	{
-		static constexpr auto LUMA = fourcc('L', 'U', 'M', 'A'); //! r:8
-		static constexpr auto BM16 = fourcc('B', 'M', '1', '6'); //! b:5 g:6 r:5
-		static constexpr auto BM24 = fourcc('B', 'M', '2', '4'); //! b:8 g:8 r:8
-		static constexpr auto BM32 = fourcc('B', 'M', '3', '2'); //! b:8 g:8 r:8 a:8
-		static constexpr auto DXT1 = fourcc('D', 'X', 'T', '1'); //! b:5 g:6 r:5
-		static constexpr auto DXT3 = fourcc('D', 'X', 'T', '3'); //! b:5 g:6 r:5 a:4
-		static constexpr auto DXT5 = fourcc('D', 'X', 'T', '5'); //! b:5 g:6 r:5 a:8
-		static constexpr auto ATI1 = fourcc('A', 'T', 'I', '1'); //! r:8
-		static constexpr auto ATI2 = fourcc('A', 'T', 'I', '2'); //! r:8 g:8
-		static constexpr auto ETC1 = fourcc('E', 'T', 'C', '1'); //!
-		static constexpr auto ETC2 = fourcc('E', 'T', 'C', '2'); //!
-		static constexpr auto HD32 = fourcc('H', 'D', '3', '2'); //! r:11 g:11 b:10
-		static constexpr auto HD64 = fourcc('H', 'D', '6', '4'); //! r:16 g:16 b:16 a:16
-	};
 
 	struct failure : shape::failure
 	{

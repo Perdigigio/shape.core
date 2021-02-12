@@ -1,4 +1,4 @@
-#include "component_camera.hh"
+#include "video_components.hh"
 
 #include "math_matrix.hh"
 #include "math_vector.hh"

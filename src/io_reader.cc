@@ -6,56 +6,40 @@
 namespace shape
 {
 
-	template<> uint16_t read<uint16_t>(std::istream& p_stream)
+	template<> std::istream & reader::read(std::istream &p_stream, uint16_t &p_data)
 	{
-		return  uint16_t(p_stream.get() & 0xFF) << 010 |
-			uint16_t(p_stream.get() & 0xFF) << 000;
+		p_data = uint16_t(p_stream.get() & 0xFF) << 010 |
+			 uint16_t(p_stream.get() & 0xFF) << 000;
+
+		return p_stream;
 	}
 
-	template<> uint32_t read<uint32_t>(std::istream& p_stream)
+	template<> std::istream & reader::read(std::istream &p_stream, uint32_t &p_data)
 	{
-		return  uint32_t(p_stream.get() & 0xFF) << 030 |
-			uint32_t(p_stream.get() & 0xFF) << 020 |
-			uint32_t(p_stream.get() & 0xFF) << 010 |
-			uint32_t(p_stream.get() & 0xFF) << 000;
+		p_data = uint32_t(p_stream.get() & 0xFF) << 030 |
+			 uint32_t(p_stream.get() & 0xFF) << 020 |
+			 uint32_t(p_stream.get() & 0xFF) << 010 |
+			 uint32_t(p_stream.get() & 0xFF) << 000;
+
+		return p_stream;
 	}
 
-	template<> uint64_t read<uint64_t>(std::istream& p_stream)
+	template<> std::istream & reader::read(std::istream &p_stream, uint64_t &p_data)
 	{
-		return  uint64_t(p_stream.get() & 0xFF) << 070 |
-			uint64_t(p_stream.get() & 0xFF) << 060 |
-			uint64_t(p_stream.get() & 0xFF) << 050 |
-			uint64_t(p_stream.get() & 0xFF) << 040 |
-			uint64_t(p_stream.get() & 0xFF) << 030 |
-			uint64_t(p_stream.get() & 0xFF) << 020 |
-			uint64_t(p_stream.get() & 0xFF) << 010 |
-			uint64_t(p_stream.get() & 0xFF) << 000;
+		p_data = uint64_t(p_stream.get() & 0xFF) << 070 |
+			 uint64_t(p_stream.get() & 0xFF) << 060 |
+			 uint64_t(p_stream.get() & 0xFF) << 050 |
+			 uint64_t(p_stream.get() & 0xFF) << 040 |
+			 uint64_t(p_stream.get() & 0xFF) << 030 |
+			 uint64_t(p_stream.get() & 0xFF) << 020 |
+			 uint64_t(p_stream.get() & 0xFF) << 010 |
+			 uint64_t(p_stream.get() & 0xFF) << 000;
+
+		return p_stream;
 	}
 
-	template<> sint16_t read<sint16_t>(std::istream& p_stream)
-	{
-		return  uint16_t(p_stream.get() & 0xFF) << 010 |
-			uint16_t(p_stream.get() & 0xFF) << 000;
-	}
-
-	template<> sint32_t read<sint32_t>(std::istream& p_stream)
-	{
-		return  uint32_t(p_stream.get() & 0xFF) << 030 |
-			uint32_t(p_stream.get() & 0xFF) << 020 |
-			uint32_t(p_stream.get() & 0xFF) << 010 |
-			uint32_t(p_stream.get() & 0xFF) << 000;
-	}
-
-	template<> sint64_t read<sint64_t>(std::istream& p_stream)
-	{
-		return  uint64_t(p_stream.get() & 0xFF) << 070 |
-			uint64_t(p_stream.get() & 0xFF) << 060 |
-			uint64_t(p_stream.get() & 0xFF) << 050 |
-			uint64_t(p_stream.get() & 0xFF) << 040 |
-			uint64_t(p_stream.get() & 0xFF) << 030 |
-			uint64_t(p_stream.get() & 0xFF) << 020 |
-			uint64_t(p_stream.get() & 0xFF) << 010 |
-			uint64_t(p_stream.get() & 0xFF) << 000;
-	}
+	template<> std::istream & reader::read(std::istream &p_stream, sint16_t &p_data) { return read(p_stream, reinterpret_cast<uint16_t &>(p_data)); }
+	template<> std::istream & reader::read(std::istream &p_stream, sint32_t &p_data) { return read(p_stream, reinterpret_cast<uint32_t &>(p_data)); }
+	template<> std::istream & reader::read(std::istream &p_stream, sint64_t &p_data) { return read(p_stream, reinterpret_cast<uint64_t &>(p_data)); }
 
 }

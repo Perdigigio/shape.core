@@ -10,16 +10,20 @@
 
 namespace shape
 {
-	template<class T> T read(std::istream&) = delete;
+	struct reader
+	{
+		template<class T> static std::istream & read(std::istream&, T &);
+	};
+
 
 	//! ----------------- INTEGER TYPES -----------------------
 
-	template<> uint16_t read<uint16_t>(std::istream&);
-	template<> uint32_t read<uint32_t>(std::istream&);
-	template<> uint64_t read<uint64_t>(std::istream&);
-	template<> sint16_t read<sint16_t>(std::istream&);
-	template<> sint32_t read<sint32_t>(std::istream&);
-	template<> sint64_t read<sint64_t>(std::istream&);
+	template<> std::istream & reader::read(std::istream &, uint16_t &);
+	template<> std::istream & reader::read(std::istream &, uint32_t &);
+	template<> std::istream & reader::read(std::istream &, uint64_t &);
+	template<> std::istream & reader::read(std::istream &, sint16_t &);
+	template<> std::istream & reader::read(std::istream &, sint32_t &);
+	template<> std::istream & reader::read(std::istream &, sint64_t &);
 
 }
 
