@@ -11,26 +11,26 @@ namespace shape
 		static constexpr auto MINOR = uint16_t(0);
 	}
 
-	template<> std::ostream & writer::write(std::ostream &p_stream, const cAssetImageData &p_image)
+	template<> bool writer::write(const file::type &p_stream, const cAssetImageData &p_image)
 	{
 		writer::write(p_stream, details::MAGIC);
 		writer::write(p_stream, details::MAJOR);
 		writer::write(p_stream, details::MINOR);
 
-		if (p_stream)
+		if (stream::good(p_stream))
 		{
 			writer::write(p_stream, p_image.get_wth());
 			writer::write(p_stream, p_image.get_hth());
 			writer::write(p_stream, p_image.get_fmt());
 		}
 
-		if (p_stream)
-			p_stream.write(static_cast<const char *>(p_image.get_data()), p_image.get_length());
+		if (stream::good(p_stream))
+			std::fwrite(p_image.get_data(), 1, p_image.get_length(), p_stream.get());
 
 		//!
 		//!
 
-		return p_stream;
+		return stream::good(p_stream);
 	}
 
 	

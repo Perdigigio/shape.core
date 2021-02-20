@@ -13,9 +13,10 @@ add_library(shape_core STATIC
 	asset_model_writer.cc
 	asset_sound.cc
 	base.cc
-	type.cc
-	io_reader.cc
-	io_writer.cc)
+	base_reader.cc
+	base_stream.cc
+	base_writer.cc
+	type.cc)
 
 add_library(shape_core_video STATIC
 	video_image.cc

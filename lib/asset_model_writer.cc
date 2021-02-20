@@ -13,10 +13,13 @@ namespace shape
 		static constexpr auto MAJOR = uint16_t(1);
 		static constexpr auto MINOR = uint16_t(0);
 
-		template<class T> static inline void write(std::ostream &p_stream, uint32_t p_len, const T *p_buf)
+		template<class T> static void write(const file::type &p_stream, uint32_t p_len, const T *p_buf) noexcept
 		{
-			for (uint32_t i = 0; i != p_len && writer::write(p_stream, p_buf[i]); i++)
-				;
+			for (uint32_t i = 0; i != p_len; i++)
+			{
+				if (!writer::write(p_stream, p_buf[i]))
+					break;
+			}
 		}
 	}
 
@@ -26,7 +29,7 @@ namespace shape
 	//!
 	//!
 
-	template<> std::ostream & writer::write(std::ostream &p_stream, const cAssetModelData &p_model)
+	template<> bool writer::write(const file::type &p_stream, const cAssetModelData &p_model)
 	{
 		writer::write(p_stream, details::MAGIC);
 		writer::write(p_stream, details::MAJOR);
@@ -35,7 +38,7 @@ namespace shape
 		//!
 		//!
 
-		if (p_stream)
+		if (stream::good(p_stream))
 		{
 			writer::write(p_stream, p_model.get_vtx());
 			writer::write(p_stream, p_model.get_idx());
@@ -51,7 +54,7 @@ namespace shape
 		if (p_model.has_tex()) writer::write(p_stream, base_model_buffer::tex);
 		if (p_model.has_skn()) writer::write(p_stream, base_model_buffer::skn);
 
-		if (p_stream)
+		if (stream::good(p_stream))
 		{
 			if (p_model.has_pos()) details::write(p_stream, p_model.get_vtx(), p_model.get_pos_data());
 			if (p_model.has_idx()) details::write(p_stream, p_model.get_idx(), p_model.get_idx_data());
@@ -63,16 +66,16 @@ namespace shape
 		//!
 		//!
 
-		return p_stream;
+		return stream::good(p_stream);
 	}
 
 	//!
 	//!
 
-	template<> std::ostream & writer::write(std::ostream &p_stream, const base_model::pos_t &p_data) { for(auto d : p_data.dummy) writer::write(p_stream, d); return p_stream; }
-	template<> std::ostream & writer::write(std::ostream &p_stream, const base_model::nor_t &p_data) { for(auto d : p_data.dummy) writer::write(p_stream, d); return p_stream; }
-	template<> std::ostream & writer::write(std::ostream &p_stream, const base_model::tex_t &p_data) { for(auto d : p_data.dummy) writer::write(p_stream, d); return p_stream; }
-	template<> std::ostream & writer::write(std::ostream &p_stream, const base_model::skn_t &p_data) { for(auto d : p_data.dummy) writer::write(p_stream, d); return p_stream; }
-	template<> std::ostream & writer::write(std::ostream &p_stream, const base_model::idx_t &p_data) { for(auto d : p_data.dummy) writer::write(p_stream, d); return p_stream; }
+	template<> bool writer::write(const file::type &p_stream, const base_model::pos_t &p_data) { for(auto d : p_data.dummy) writer::write(p_stream, d); return stream::good(p_stream); }
+	template<> bool writer::write(const file::type &p_stream, const base_model::nor_t &p_data) { for(auto d : p_data.dummy) writer::write(p_stream, d); return stream::good(p_stream); }
+	template<> bool writer::write(const file::type &p_stream, const base_model::tex_t &p_data) { for(auto d : p_data.dummy) writer::write(p_stream, d); return stream::good(p_stream); }
+	template<> bool writer::write(const file::type &p_stream, const base_model::skn_t &p_data) { for(auto d : p_data.dummy) writer::write(p_stream, d); return stream::good(p_stream); }
+	template<> bool writer::write(const file::type &p_stream, const base_model::idx_t &p_data) { for(auto d : p_data.dummy) writer::write(p_stream, d); return stream::good(p_stream); }
 
 } //! shape

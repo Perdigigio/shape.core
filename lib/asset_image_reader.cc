@@ -31,7 +31,7 @@ namespace shape
 	//!
 	//!
 
-	template<> std::istream & reader::read(std::istream &p_stream, cAssetImageData &p_image)
+	template<> bool reader::read(const file::type &p_stream, cAssetImageData &p_image)
 	{
 		uint32_t l_magic;
 		uint16_t l_major;
@@ -57,7 +57,7 @@ namespace shape
 				reader::read(p_stream, l_image_fmt);
 			}
 			else
-				p_stream.setstate(std::ios::failbit);
+				return false;
 		}
 
 		cAssetImageData l_image{ l_image_wth, l_image_hth, l_image_fmt };
@@ -65,7 +65,7 @@ namespace shape
 		//!
 		//!
 
-		if (p_stream.read(static_cast<char *>(l_image.get_data()), l_image.get_length()))
+		if (std::fread(l_image.get_data(), 1, l_image.get_length(), p_stream.get()) == l_image.get_length())
 		{
 			//!
 			//! READ BITMAP DATA
@@ -77,7 +77,7 @@ namespace shape
 		//!
 		//!
 
-		return p_stream;
+		return stream::good(p_stream);
 	}
 
 } //! shape

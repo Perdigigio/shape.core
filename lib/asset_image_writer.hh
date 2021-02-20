@@ -1,7 +1,7 @@
 #ifndef SHAPE_ASSET_IMAGE_WRITER_HH__GUARD
 #define SHAPE_ASSET_IMAGE_WRITER_HH__GUARD
 
-#include "io_writer.hh"
+#include "base_writer.hh"
 
 //!
 //!
@@ -14,7 +14,7 @@ namespace shape
 	 * @param stream
 	 * @param source
 	 */
-	template<> std::ostream & writer::write(std::ostream &, const cAssetImageData &);
+	template<> bool writer::write(const file::type &, const cAssetImageData &);
 }
 
 #endif

@@ -6,7 +6,7 @@
 namespace shape {
 namespace video {
 
-	class cVideoModel : private cBaseVertexBuffer
+	class cVideoModel : public cBaseVertexBuffer
 	{
 	public:
 		static constexpr auto has_nor = (1U << 0);
@@ -36,6 +36,8 @@ namespace video {
 		using cBaseVertexBuffer::update_skn;
 		using cBaseVertexBuffer::update_idx;
 
+
+
 		// void update_pos(uint32_t, uint32_t, const base_model::pos_t *) noexcept;
 		// void update_nor(uint32_t, uint32_t, const base_model::nor_t *) noexcept;
 		// void update_tex(uint32_t, uint32_t, const base_model::tex_t *) noexcept;
@@ -49,9 +51,9 @@ namespace video {
 		//! GETTERS
 		//!
 
-		inline uint32_t get_vtx() const noexcept { return m_vtx; }
-		inline uint32_t get_idx() const noexcept { return m_idx; }
-		inline uint32_t get_fmt() const noexcept { return m_fmt; }
+		inline uint32_t get_vtx_num() const noexcept { return m_vtx; }
+		inline uint32_t get_idx_num() const noexcept { return m_idx; }
+		inline uint32_t get_fmt_num() const noexcept { return m_fmt; }
 
 		inline ~cVideoModel() noexcept
 		{

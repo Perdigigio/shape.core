@@ -21,34 +21,37 @@ namespace shape
 			return maj > details::MAJOR || (maj == details::MAJOR && min >= details::MINOR);
 		}
 
-		template<class T> static inline void read(std::istream &p_stream, uint32_t p_len, T *p_buf)
+		template<class T> static void read(const file::type &p_stream, uint32_t p_len, T *p_buf) noexcept
 		{
-			for (uint32_t i = 0; i != p_len && reader::read(p_stream, p_buf[i]); i++)
-				;
+			for (uint32_t i = 0; i != p_len; i++)
+			{
+				if (!reader::read(p_stream, p_buf[i]))
+					break;
+			}
 		}
 	}
 
 	//!
 	//!
 
-	template<> std::istream & reader::read(std::istream &p_stream, cAssetModelData &p_model)
+	template<> bool reader::read(const file::type &p_stream, cAssetModelData &p_model)
 	{
 		uint32_t l_magic;
 		uint16_t l_major;
 		uint16_t l_minor;
 
 		uint32_t l_model_vtx = 0;
-		uint16_t l_model_idx = 0;
-		uint16_t l_model_fmt = 0;
+		uint32_t l_model_idx = 0;
+		uint32_t l_model_fmt = 0;
 
-		if (p_stream)
+		if (stream::good(p_stream))
 		{
 			reader::read(p_stream, l_magic);
 			reader::read(p_stream, l_major);
 			reader::read(p_stream, l_minor);
 		}
 
-		if (p_stream)
+		if (stream::good(p_stream))
 		{
 			if (l_magic == details::MAGIC && details::check_version(l_major, l_minor))
 			{
@@ -57,7 +60,7 @@ namespace shape
 				reader::read(p_stream, l_model_fmt);
 			}
 			else
-				p_stream.setstate(std::ios::failbit);
+				return false;
 		}
 
 		cAssetModelData l_model = { l_model_vtx, l_model_idx, l_model_fmt };
@@ -76,12 +79,12 @@ namespace shape
 			(!l_model.has_skn() || (reader::read(p_stream, l_skn) && l_skn == base_model_buffer::skn));
 
 		if (!l_valid)
-			p_stream.setstate(std::ios::failbit);
+			return false;
 
 		//!
 		//!
 
-		if (p_stream)
+		if (stream::good(p_stream))
 		{
 			if (l_model.has_pos()) details::read(p_stream, l_model.get_vtx(), l_model.get_pos_data());
 			if (l_model.has_idx()) details::read(p_stream, l_model.get_idx(), l_model.get_idx_data());
@@ -90,19 +93,19 @@ namespace shape
 			if (l_model.has_skn()) details::read(p_stream, l_model.get_vtx(), l_model.get_skn_data());
 		}
 
-		if (p_stream)
+		if (stream::good(p_stream))
 			std::swap(p_model, l_model);
 
 		//!
 		//!
 
-		return p_stream;
+		return stream::good(p_stream);
 	}
 
-	template<> std::istream & reader::read(std::istream &p_stream, base_model::pos_t &p_data) { for(auto &d : p_data.dummy) reader::read(p_stream, d); return p_stream; }
-	template<> std::istream & reader::read(std::istream &p_stream, base_model::nor_t &p_data) { for(auto &d : p_data.dummy) reader::read(p_stream, d); return p_stream; }
-	template<> std::istream & reader::read(std::istream &p_stream, base_model::tex_t &p_data) { for(auto &d : p_data.dummy) reader::read(p_stream, d); return p_stream; }
-	template<> std::istream & reader::read(std::istream &p_stream, base_model::skn_t &p_data) { for(auto &d : p_data.dummy) reader::read(p_stream, d); return p_stream; }
-	template<> std::istream & reader::read(std::istream &p_stream, base_model::idx_t &p_data) { for(auto &d : p_data.dummy) reader::read(p_stream, d); return p_stream; }
+	template<> bool reader::read(const file::type &p_stream, base_model::pos_t &p_data) { for(auto &d : p_data.dummy) reader::read(p_stream, d); return stream::good(p_stream); }
+	template<> bool reader::read(const file::type &p_stream, base_model::nor_t &p_data) { for(auto &d : p_data.dummy) reader::read(p_stream, d); return stream::good(p_stream); }
+	template<> bool reader::read(const file::type &p_stream, base_model::tex_t &p_data) { for(auto &d : p_data.dummy) reader::read(p_stream, d); return stream::good(p_stream); }
+	template<> bool reader::read(const file::type &p_stream, base_model::skn_t &p_data) { for(auto &d : p_data.dummy) reader::read(p_stream, d); return stream::good(p_stream); }
+	template<> bool reader::read(const file::type &p_stream, base_model::idx_t &p_data) { for(auto &d : p_data.dummy) reader::read(p_stream, d); return stream::good(p_stream); }
 
 } //! shape

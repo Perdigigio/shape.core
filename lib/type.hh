@@ -26,12 +26,6 @@ namespace shape
 		static constexpr auto skn = fourcc('s', 'k', 'n', ' ');
 		static constexpr auto idx = fourcc('i', 'd', 'x', ' ');
 	};
-
-	struct handle
-	{
-		uint32_t l : 20;
-		uint32_t h : 12;
-	};
 }
 
 namespace shape {

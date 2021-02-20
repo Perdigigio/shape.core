@@ -188,10 +188,10 @@ namespace shape
 			//! STORE TRANSPOSED
 			//!
 
-			load(r1(ret), vector4<T>{ a / q, e / q, i / q, m / q });
-			load(r2(ret), vector4<T>{ b / q, f / q, j / q, n / q });
-			load(r3(ret), vector4<T>{ c / q, g / q, k / q, o / q });
-			load(r4(ret), vector4<T>{ d / q, h / q, l / q, p / q });
+			copy(r1(ret), { a / q, e / q, i / q, m / q });
+			copy(r2(ret), { b / q, f / q, j / q, n / q });
+			copy(r3(ret), { c / q, g / q, k / q, o / q });
+			copy(r4(ret), { d / q, h / q, l / q, p / q });
 		}
 
 		//!
@@ -202,17 +202,17 @@ namespace shape
 
 	//! ------------------------------------------------------------------------------------------
 
-	template<class T> static inline matrix3<T>& translate(matrix3<T>& m, vector2<T> t) noexcept
+	template<class T> static inline matrix3<T>& load_translate(matrix3<T>& m, vector2<T> t) noexcept
 	{
-		m.data[0].data[1] += t.data[0];
-		m.data[1].data[1] += t.data[1]; return m;
+		r3(m).data[0] = t.data[0];
+		r3(m).data[1] = t.data[1]; return m;
 	}
 
-	template<class T> static inline matrix4<T>& translate(matrix4<T>& m, vector3<T> t) noexcept
+	template<class T> static inline matrix4<T>& load_translate(matrix4<T>& m, vector3<T> t) noexcept
 	{
-		m.data[0].data[2] += t.data[0];
-		m.data[1].data[2] += t.data[1];
-		m.data[2].data[2] += t.data[2]; return m;
+		r4(m).data[0] = t.data[0];
+		r4(m).data[1] = t.data[1];
+		r4(m).data[2] = t.data[2]; return m;
 	}
 
 	//! ------------------------------------------------------------------------------------------

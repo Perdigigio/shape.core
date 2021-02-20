@@ -5,7 +5,6 @@
 
 namespace shape
 {
-
 	template<class T> static inline vector2<T>& mul(matrix2<T> a, vector2<T> b) noexcept { return mul(b, a, b); }
 	template<class T> static inline vector3<T>& mul(matrix3<T> a, vector3<T> b) noexcept { return mul(b, a, b); }
 	template<class T> static inline vector4<T>& mul(matrix4<T> a, vector4<T> b) noexcept { return mul(b, a, b); }
@@ -120,6 +119,29 @@ namespace shape
 		//!
 
 		return a * d - b * c;
+	}
+
+	//! ------------------------------------------------------------------------------------------------
+
+	template<class T> static inline matrix2<T>& load_identity(matrix2<T>& m) noexcept
+	{
+		copy(r1(m), { T(1), T(0) });
+		copy(r2(m), { T(0), T(1) }); return m;
+	}
+
+	template<class T> static inline matrix3<T>& load_identity(matrix3<T>& m) noexcept
+	{
+		copy(r1(m), { T(1), T(0), T(0) });
+		copy(r2(m), { T(0), T(1), T(0) });
+		copy(r3(m), { T(0), T(0), T(1) }); return m;
+	}
+
+	template<class T> static inline matrix4<T>& load_identity(matrix4<T>& m) noexcept
+	{
+		copy(r1(m), { T(1), T(0), T(0), T(0) });
+		copy(r2(m), { T(0), T(1), T(0), T(0) });
+		copy(r3(m), { T(0), T(0), T(1), T(0) });
+		copy(r4(m), { T(0), T(0), T(0), T(1) }); return m;
 	}
 
 } //! shape

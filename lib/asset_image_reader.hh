@@ -1,7 +1,7 @@
 #ifndef SHAPE_ASSET_IMAGE_READER_HH__GUARD
 #define SHAPE_ASSET_IMAGE_READER_HH__GUARD
 
-#include "io_reader.hh"
+#include "base_reader.hh"
 
 //!
 //!
@@ -14,7 +14,7 @@ namespace shape
 	 * @param stream
 	 * @param source
 	 */
-	template<> std::istream & reader::read(std::istream &, cAssetImageData &);
+	template<> bool reader::read(const file::type &, cAssetImageData &);
 
 }
 
