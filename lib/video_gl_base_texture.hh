@@ -33,6 +33,8 @@ namespace video {
 		static bool init_1d_array(base_texture *, uint32_t, uint16_t, uint16_t, vector1<GLsizei>) noexcept; //! GL_TEXTURE_2D_ARRAY
 		static bool init_2d_array(base_texture *, uint32_t, uint16_t, uint16_t, vector2<GLsizei>) noexcept; //! GL_TEXTURE_3D_ARRAY
 
+		static bool init_cube(base_texture *, uint32_t, uint16_t, vector2<GLsizei>) noexcept;
+
 		//! --------------------------------------------------------------------------------------------------------
 
 		static void compressed_update_1d(base_texture const*, uint16_t, const void *, uint32_t) noexcept;
@@ -73,57 +75,67 @@ namespace video {
 	class cBaseTexture : private base_texture
 	{
 	public:
-		inline cBaseTexture() noexcept
+		inline cBaseTexture() noexcept : m_object{ std::make_unique<base_texture>() }
 		{
-			this->handle = {};
-			this->levels = {};
-			this->target = {};
-			this->format = {};
-		};
+			m_object->handle = {};
+			m_object->levels = {};
+			m_object->target = {};
+			m_object->format = {};
+		}
 
 		//! ----------------------------------------------------------------------------------------
 
-		inline bool init_1d(uint32_t p_fmt, uint16_t p_lvl, vector1<GLsizei> p_dim) noexcept { return base_texture::init_1d(this, p_fmt, p_lvl, p_dim); }
-		inline bool init_2d(uint32_t p_fmt, uint16_t p_lvl, vector2<GLsizei> p_dim) noexcept { return base_texture::init_2d(this, p_fmt, p_lvl, p_dim); }
-		inline bool init_3d(uint32_t p_fmt, uint16_t p_lvl, vector3<GLsizei> p_dim) noexcept { return base_texture::init_3d(this, p_fmt, p_lvl, p_dim); }
-		inline bool init_1d_array(uint32_t p_fmt, uint16_t p_lvl, uint16_t p_num, vector1<GLsizei> p_dim) noexcept { return base_texture::init_1d_array(this, p_fmt, p_lvl, p_num, p_dim); }
-		inline bool init_2d_array(uint32_t p_fmt, uint16_t p_lvl, uint16_t p_num, vector2<GLsizei> p_dim) noexcept { return base_texture::init_2d_array(this, p_fmt, p_lvl, p_num, p_dim); }
+		inline bool init_1d(uint32_t p_fmt, uint16_t p_lvl, vector1<GLsizei> p_dim) noexcept { return base_texture::init_1d(m_object.get(), p_fmt, p_lvl, p_dim); }
+		inline bool init_2d(uint32_t p_fmt, uint16_t p_lvl, vector2<GLsizei> p_dim) noexcept { return base_texture::init_2d(m_object.get(), p_fmt, p_lvl, p_dim); }
+		inline bool init_3d(uint32_t p_fmt, uint16_t p_lvl, vector3<GLsizei> p_dim) noexcept { return base_texture::init_3d(m_object.get(), p_fmt, p_lvl, p_dim); }
+		inline bool init_1d_array(uint32_t p_fmt, uint16_t p_lvl, uint16_t p_num, vector1<GLsizei> p_dim) noexcept { return base_texture::init_1d_array(m_object.get(), p_fmt, p_lvl, p_num, p_dim); }
+		inline bool init_2d_array(uint32_t p_fmt, uint16_t p_lvl, uint16_t p_num, vector2<GLsizei> p_dim) noexcept { return base_texture::init_2d_array(m_object.get(), p_fmt, p_lvl, p_num, p_dim); }
+
+		inline bool init_cube(uint32_t p_fmt, uint16_t p_lvl, vector2<GLsizei> p_dim) noexcept { return base_texture::init_cube(m_object.get(), p_fmt, p_lvl, p_dim); }
 
 		//! ----------------------------------------------------------------------------------------
 
-		inline void compressed_update_1d(uint16_t p_img, const void *p_src, uint32_t p_fmt) const noexcept { base_texture::compressed_update_1d(this, p_img, p_src, p_fmt); }
-		inline void compressed_update_2d(uint16_t p_img, const void *p_src, uint32_t p_fmt) const noexcept { base_texture::compressed_update_2d(this, p_img, p_src, p_fmt); }
-		inline void compressed_update_3d(uint16_t p_img, const void *p_src, uint32_t p_fmt) const noexcept { base_texture::compressed_update_3d(this, p_img, p_src, p_fmt); }
-		inline void compressed_update_1d(uint16_t p_img, const void *p_src, uint32_t p_fmt, GLsizei p_length, const base_region &p_dst) const noexcept { base_texture::compressed_update_1d(this, p_img, p_src, p_fmt, p_length, p_dst); }
-		inline void compressed_update_2d(uint16_t p_img, const void *p_src, uint32_t p_fmt, GLsizei p_length, const base_region &p_dst) const noexcept { base_texture::compressed_update_2d(this, p_img, p_src, p_fmt, p_length, p_dst); }
-		inline void compressed_update_3d(uint16_t p_img, const void *p_src, uint32_t p_fmt, GLsizei p_length, const base_region &p_dst) const noexcept { base_texture::compressed_update_3d(this, p_img, p_src, p_fmt, p_length, p_dst); }
+		inline void compressed_update_1d(uint16_t p_img, const void *p_src, uint32_t p_fmt) const noexcept { base_texture::compressed_update_1d(m_object.get(), p_img, p_src, p_fmt); }
+		inline void compressed_update_2d(uint16_t p_img, const void *p_src, uint32_t p_fmt) const noexcept { base_texture::compressed_update_2d(m_object.get(), p_img, p_src, p_fmt); }
+		inline void compressed_update_3d(uint16_t p_img, const void *p_src, uint32_t p_fmt) const noexcept { base_texture::compressed_update_3d(m_object.get(), p_img, p_src, p_fmt); }
+		inline void compressed_update_1d(uint16_t p_img, const void *p_src, uint32_t p_fmt, GLsizei p_length, const base_region &p_dst) const noexcept { base_texture::compressed_update_1d(m_object.get(), p_img, p_src, p_fmt, p_length, p_dst); }
+		inline void compressed_update_2d(uint16_t p_img, const void *p_src, uint32_t p_fmt, GLsizei p_length, const base_region &p_dst) const noexcept { base_texture::compressed_update_2d(m_object.get(), p_img, p_src, p_fmt, p_length, p_dst); }
+		inline void compressed_update_3d(uint16_t p_img, const void *p_src, uint32_t p_fmt, GLsizei p_length, const base_region &p_dst) const noexcept { base_texture::compressed_update_3d(m_object.get(), p_img, p_src, p_fmt, p_length, p_dst); }
 
-		inline void update_1d(uint16_t p_img, const void *p_src, GLenum p_fmt, GLenum p_type) const noexcept { base_texture::update_1d(this, p_img, p_src, p_fmt, p_type); }
-		inline void update_2d(uint16_t p_img, const void *p_src, GLenum p_fmt, GLenum p_type) const noexcept { base_texture::update_2d(this, p_img, p_src, p_fmt, p_type); }
-		inline void update_3d(uint16_t p_img, const void *p_src, GLenum p_fmt, GLenum p_type) const noexcept { base_texture::update_3d(this, p_img, p_src, p_fmt, p_type); }
-		inline void update_1d(uint16_t p_img, const void *p_src, GLenum p_fmt, GLenum p_type, const base_region &p_dst) const noexcept { base_texture::update_1d(this, p_img, p_src, p_fmt, p_type, p_dst); }
-		inline void update_2d(uint16_t p_img, const void *p_src, GLenum p_fmt, GLenum p_type, const base_region &p_dst) const noexcept { base_texture::update_2d(this, p_img, p_src, p_fmt, p_type, p_dst); }
-		inline void update_3d(uint16_t p_img, const void *p_src, GLenum p_fmt, GLenum p_type, const base_region &p_dst) const noexcept { base_texture::update_3d(this, p_img, p_src, p_fmt, p_type, p_dst); }
-
-		//! ----------------------------------------------------------------------------------------
-
-		inline void upload_1d(uint16_t p_img, const void *p_src, uint32_t p_fmt) const noexcept { base_texture::upload_1d(this, p_img, p_src, p_fmt); }
-		inline void upload_2d(uint16_t p_img, const void *p_src, uint32_t p_fmt) const noexcept { base_texture::upload_2d(this, p_img, p_src, p_fmt); }
-		inline void upload_3d(uint16_t p_img, const void *p_src, uint32_t p_fmt) const noexcept { base_texture::upload_3d(this, p_img, p_src, p_fmt); }
-		inline void upload_1d(uint16_t p_img, const void *p_src, uint32_t p_fmt, GLsizei p_len, const base_region &p_dst) const noexcept { base_texture::upload_1d(this, p_img, p_src, p_fmt, p_len, p_dst); }
-		inline void upload_2d(uint16_t p_img, const void *p_src, uint32_t p_fmt, GLsizei p_len, const base_region &p_dst) const noexcept { base_texture::upload_2d(this, p_img, p_src, p_fmt, p_len, p_dst); }
-		inline void upload_3d(uint16_t p_img, const void *p_src, uint32_t p_fmt, GLsizei p_len, const base_region &p_dst) const noexcept { base_texture::upload_3d(this, p_img, p_src, p_fmt, p_len, p_dst); }
+		inline void update_1d(uint16_t p_img, const void *p_src, GLenum p_fmt, GLenum p_type) const noexcept { base_texture::update_1d(m_object.get(), p_img, p_src, p_fmt, p_type); }
+		inline void update_2d(uint16_t p_img, const void *p_src, GLenum p_fmt, GLenum p_type) const noexcept { base_texture::update_2d(m_object.get(), p_img, p_src, p_fmt, p_type); }
+		inline void update_3d(uint16_t p_img, const void *p_src, GLenum p_fmt, GLenum p_type) const noexcept { base_texture::update_3d(m_object.get(), p_img, p_src, p_fmt, p_type); }
+		inline void update_1d(uint16_t p_img, const void *p_src, GLenum p_fmt, GLenum p_type, const base_region &p_dst) const noexcept { base_texture::update_1d(m_object.get(), p_img, p_src, p_fmt, p_type, p_dst); }
+		inline void update_2d(uint16_t p_img, const void *p_src, GLenum p_fmt, GLenum p_type, const base_region &p_dst) const noexcept { base_texture::update_2d(m_object.get(), p_img, p_src, p_fmt, p_type, p_dst); }
+		inline void update_3d(uint16_t p_img, const void *p_src, GLenum p_fmt, GLenum p_type, const base_region &p_dst) const noexcept { base_texture::update_3d(m_object.get(), p_img, p_src, p_fmt, p_type, p_dst); }
 
 		//! ----------------------------------------------------------------------------------------
 
-		inline void free() noexcept { base_texture::free(this); }
+		inline void upload_1d(uint16_t p_img, const void *p_src, uint32_t p_fmt) const noexcept { base_texture::upload_1d(m_object.get(), p_img, p_src, p_fmt); }
+		inline void upload_2d(uint16_t p_img, const void *p_src, uint32_t p_fmt) const noexcept { base_texture::upload_2d(m_object.get(), p_img, p_src, p_fmt); }
+		inline void upload_3d(uint16_t p_img, const void *p_src, uint32_t p_fmt) const noexcept { base_texture::upload_3d(m_object.get(), p_img, p_src, p_fmt); }
+		inline void upload_1d(uint16_t p_img, const void *p_src, uint32_t p_fmt, GLsizei p_len, const base_region &p_dst) const noexcept { base_texture::upload_1d(m_object.get(), p_img, p_src, p_fmt, p_len, p_dst); }
+		inline void upload_2d(uint16_t p_img, const void *p_src, uint32_t p_fmt, GLsizei p_len, const base_region &p_dst) const noexcept { base_texture::upload_2d(m_object.get(), p_img, p_src, p_fmt, p_len, p_dst); }
+		inline void upload_3d(uint16_t p_img, const void *p_src, uint32_t p_fmt, GLsizei p_len, const base_region &p_dst) const noexcept { base_texture::upload_3d(m_object.get(), p_img, p_src, p_fmt, p_len, p_dst); }
 
 		//! ----------------------------------------------------------------------------------------
 
-		inline GLuint get_handle() const noexcept { return this->handle; }
-		inline GLuint get_levels() const noexcept { return this->levels; }
-		inline GLenum get_target() const noexcept { return this->target; }
-		inline GLenum get_format() const noexcept { return this->format; }
+		inline void free() noexcept { base_texture::free(m_object.get()); }
+
+		//! ----------------------------------------------------------------------------------------
+
+		inline GLuint get_handle() const noexcept { return m_object->handle; }
+		inline GLuint get_levels() const noexcept { return m_object->levels; }
+		inline GLenum get_target() const noexcept { return m_object->target; }
+		inline GLenum get_format() const noexcept { return m_object->format; }
+
+		inline ~cBaseTexture() noexcept
+		{
+			cBaseTexture::free();
+		}
+
+	private:
+		std::unique_ptr<base_texture> m_object;
 	};
 
 } //! shape::video

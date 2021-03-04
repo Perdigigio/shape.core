@@ -110,15 +110,24 @@ namespace shape
 
 	template<class T> static inline float det(matrix4<T> m)
 	{
-		auto a = det(matrix2<T>{ r1(m).data[0], r1(m).data[1], r2(m).data[0], r2(m).data[1] });
-		auto b = det(matrix2<T>{ r1(m).data[2], r1(m).data[3], r2(m).data[2], r2(m).data[3] });
-		auto c = det(matrix2<T>{ r3(m).data[0], r3(m).data[1], r4(m).data[0], r4(m).data[1] });
-		auto d = det(matrix2<T>{ r3(m).data[2], r3(m).data[3], r4(m).data[2], r4(m).data[3] });
+		float a = r2(m).data[1] * (r3(m).data[2] * r4(m).data[3] - r3(m).data[3] * r4(m).data[2]) -
+			  r2(m).data[2] * (r3(m).data[1] * r4(m).data[3] - r3(m).data[3] * r4(m).data[1]) +
+			  r2(m).data[3] * (r3(m).data[1] * r4(m).data[2] - r3(m).data[2] * r4(m).data[1]);
+		float b = r2(m).data[0] * (r3(m).data[2] * r4(m).data[3] - r3(m).data[3] * r4(m).data[2]) -
+			  r2(m).data[2] * (r3(m).data[0] * r4(m).data[3] - r3(m).data[3] * r4(m).data[0]) +
+			  r2(m).data[3] * (r3(m).data[0] * r4(m).data[2] - r3(m).data[2] * r4(m).data[0]);
+		float c = r2(m).data[0] * (r3(m).data[1] * r4(m).data[3] - r3(m).data[3] * r4(m).data[1]) -
+			  r2(m).data[1] * (r3(m).data[0] * r4(m).data[3] - r3(m).data[3] * r4(m).data[0]) +
+			  r2(m).data[3] * (r3(m).data[0] * r4(m).data[1] - r3(m).data[1] * r4(m).data[0]);
+		float d = r2(m).data[0] * (r3(m).data[1] * r4(m).data[2] - r3(m).data[2] * r4(m).data[1]) -
+			  r2(m).data[1] * (r3(m).data[0] * r4(m).data[2] - r3(m).data[2] * r4(m).data[0]) +
+			  r2(m).data[2] * (r3(m).data[0] * r4(m).data[1] - r3(m).data[1] * r4(m).data[0]);
 
 		//!
 		//!
 
-		return a * d - b * c;
+		return  r1(m).data[0] * a - r1(m).data[1] * b +
+			r1(m).data[2] * c - r1(m).data[3] * d;
 	}
 
 	//! ------------------------------------------------------------------------------------------------

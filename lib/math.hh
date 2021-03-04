@@ -110,6 +110,75 @@ namespace shape
 
 	//! --------------------------------------------------------------------------------------------
 
+	template<class T> inline constexpr void set(vector2<T>& dst, T x, T y) noexcept
+	{
+		dst.data[0] = x;
+		dst.data[1] = y;
+	}
+
+	template<class T> inline constexpr void set(vector3<T>& dst, T x, T y, T z) noexcept
+	{
+		dst.data[0] = x;
+		dst.data[1] = y;
+		dst.data[2] = z;
+	}
+
+	template<class T> inline constexpr void set(vector2<T>& dst, vector2<T> _, T z) noexcept
+	{
+		dst.data[0] = x(_);
+		dst.data[1] = y(_);
+		dst.data[2] = z;
+	}
+
+	template<class T> inline constexpr void set(vector4<T>& dst, T x, T y, T z, T w) noexcept
+	{
+		dst.data[0] = x;
+		dst.data[1] = y;
+		dst.data[2] = z;
+		dst.data[3] = w;
+	}
+
+	template<class T> inline constexpr void set(vector4<T>& dst, vector2<T> _, T z, T w) noexcept
+	{
+		dst.data[0] = x(_);
+		dst.data[1] = y(_);
+		dst.data[2] = z;
+		dst.data[3] = w;
+	}
+
+	template<class T> inline constexpr void set(vector4<T>& dst, vector3<T> _, T w) noexcept
+	{
+		dst.data[0] = x(_);
+		dst.data[1] = y(_);
+		dst.data[2] = z(_);
+		dst.data[3] = w;
+	}
+
+	//! --------------------------------------------------------------------------------------------
+
+	template<class T> static inline vector2<T>& set(vector2<T> &r, T a) noexcept
+	{
+		x(r) = a;
+		y(r) = a; return r;
+	}
+
+	template<class T> static inline vector3<T>& set(vector3<T> &r, T a) noexcept
+	{
+		x(r) = a;
+		y(r) = a;
+		z(r) = a; return r;
+	}
+
+	template<class T> static inline vector4<T>& set(vector4<T> &r, T a) noexcept
+	{
+		x(r) = a;
+		y(r) = a;
+		z(r) = a;
+		w(r) = a; return r;
+	}
+
+	//! --------------------------------------------------------------------------------------------
+
 	template<class T> inline constexpr void copy(vector2<T>& dst, vector2<T> const &src) noexcept { load(dst, src.data); }
 	template<class T> inline constexpr void copy(vector3<T>& dst, vector3<T> const &src) noexcept { load(dst, src.data); }
 	template<class T> inline constexpr void copy(vector4<T>& dst, vector4<T> const &src) noexcept { load(dst, src.data); }
@@ -195,6 +264,10 @@ namespace shape
 	typedef vector2<char> char2;
 	typedef vector3<char> char3;
 	typedef vector4<char> char4;
+	typedef vector2<int> sint2;
+	typedef vector3<int> sint3;
+	typedef vector4<int> sint4;
+
 
 	typedef matrix2<float> real2x2;
 	typedef matrix3<float> real3x3;
@@ -208,7 +281,9 @@ namespace shape
 	typedef matrix2<char> char2x2;
 	typedef matrix3<char> char3x3;
 	typedef matrix4<char> char4x4;
-
+	typedef vector2<unsigned int> uint2;
+	typedef vector3<unsigned int> uint3;
+	typedef vector4<unsigned int> uint4;
 }
 
 #include "math_simd_sse.hh"

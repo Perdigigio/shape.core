@@ -16,15 +16,22 @@ namespace shape
 		struct tex_t { uint16_t dummy[4]; }; //! 4 * 16-bit [FLOAT IEEE-754]
 		struct skn_t { uint32_t dummy[2]; }; //! 2 * 32-bit
 		struct idx_t { uint32_t dummy[1]; }; //! 1 * 32-bit
+
+		struct sub_t
+		{
+			uint32_t first;
+			uint32_t count;
+		};
 	};
 	
-	struct base_model_buffer
+	struct base_model_fourcc
 	{
 		static constexpr auto pos = fourcc('p', 'o', 's', ' ');
 		static constexpr auto nor = fourcc('n', 'o', 'r', ' ');
 		static constexpr auto tex = fourcc('t', 'e', 'x', ' ');
 		static constexpr auto skn = fourcc('s', 'k', 'n', ' ');
 		static constexpr auto idx = fourcc('i', 'd', 'x', ' ');
+		static constexpr auto sub = fourcc('s', 'u', 'b', ' ');
 	};
 }
 
@@ -46,6 +53,7 @@ namespace video {
 		static constexpr auto ETC2 = fourcc('E', 'T', 'C', '2'); //!
 		static constexpr auto HD32 = fourcc('H', 'D', '3', '2'); //! r:11 g:11 b:10
 		static constexpr auto HD64 = fourcc('H', 'D', '6', '4'); //! r:16 g:16 b:16 a:16
+		static constexpr auto FLT1 = fourcc('F', 'L', 'T', '1'); //! r:32
 	};
 
 	//!

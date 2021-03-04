@@ -1,4 +1,4 @@
-#include "video_gl_base_framebuffer.hh"
+#include "video_gl_base_render_buffers.hh"
 
 namespace shape {
 namespace video {
@@ -25,9 +25,9 @@ namespace video {
 	//!
 	//!
 
-	bool base_framebuffer::init(base_framebuffer *p_frame, GLsizei w, GLsizei h, GLsizei n) noexcept
+	bool base_render_buffers::init(base_render_buffers *p_frame, GLsizei w, GLsizei h, GLsizei n) noexcept
 	{
-		#ifdef DEBUG
+		#ifdef _DEBUG
 		if (!p_frame || glIsFramebuffer(p_frame->handle) ||
 			glIsTexture(p_frame->albedo) ||
 			glIsTexture(p_frame->normal) ||
@@ -82,12 +82,12 @@ namespace video {
 		return glIsFramebuffer(p_frame->handle);
 	}
 
-	void base_framebuffer::clear_albedo(base_framebuffer *p_frame, float r, float g, float b, float a) noexcept { glClearTexImage(p_frame->albedo, 0, GL_RGBA, GL_FLOAT, make_color(r, g, b, a).data); }
-	void base_framebuffer::clear_normal(base_framebuffer *p_frame, float r, float g, float b, float a) noexcept { glClearTexImage(p_frame->normal, 0, GL_RGBA, GL_FLOAT, make_color(r, g, b, a).data); }
-	void base_framebuffer::clear_params(base_framebuffer *p_frame, float r, float g, float b, float a) noexcept { glClearTexImage(p_frame->params, 0, GL_RGBA, GL_FLOAT, make_color(r, g, b, a).data); }
-	void base_framebuffer::clear_fdepth(base_framebuffer *p_frame, float d) noexcept { glClearTexImage(p_frame->fdepth, 0, GL_RED, GL_FLOAT, &d); }
+	void base_render_buffers::clear_albedo(base_render_buffers *p_frame, float r, float g, float b, float a) noexcept { glClearTexImage(p_frame->albedo, 0, GL_RGBA, GL_FLOAT, make_color(r, g, b, a).data); }
+	void base_render_buffers::clear_normal(base_render_buffers *p_frame, float r, float g, float b, float a) noexcept { glClearTexImage(p_frame->normal, 0, GL_RGBA, GL_FLOAT, make_color(r, g, b, a).data); }
+	void base_render_buffers::clear_params(base_render_buffers *p_frame, float r, float g, float b, float a) noexcept { glClearTexImage(p_frame->params, 0, GL_RGBA, GL_FLOAT, make_color(r, g, b, a).data); }
+	void base_render_buffers::clear_fdepth(base_render_buffers *p_frame, float d) noexcept { glClearTexImage(p_frame->fdepth, 0, GL_RED, GL_FLOAT, &d); }
 
-	void base_framebuffer::clear_tdepth(base_framebuffer *p_frame, float d) noexcept
+	void base_render_buffers::clear_tdepth(base_render_buffers *p_frame, float d) noexcept
 	{
 		//!
 		//! CLEAR DEPTH_STENCIL BUFFER
@@ -96,12 +96,12 @@ namespace video {
 		glClearNamedFramebufferfi(p_frame->handle, GL_DEPTH_STENCIL, 0, d, 0);
 	}
 	
-	void base_framebuffer::discard_albedo(base_framebuffer *p_frame) noexcept { glInvalidateTexImage(p_frame->albedo, 0); }
-	void base_framebuffer::discard_normal(base_framebuffer *p_frame) noexcept { glInvalidateTexImage(p_frame->normal, 0); }
-	void base_framebuffer::discard_params(base_framebuffer *p_frame) noexcept { glInvalidateTexImage(p_frame->params, 0); }
-	void base_framebuffer::discard_fdepth(base_framebuffer *p_frame) noexcept { glInvalidateTexImage(p_frame->fdepth, 0); }
+	void base_render_buffers::discard_albedo(base_render_buffers *p_frame) noexcept { glInvalidateTexImage(p_frame->albedo, 0); }
+	void base_render_buffers::discard_normal(base_render_buffers *p_frame) noexcept { glInvalidateTexImage(p_frame->normal, 0); }
+	void base_render_buffers::discard_params(base_render_buffers *p_frame) noexcept { glInvalidateTexImage(p_frame->params, 0); }
+	void base_render_buffers::discard_fdepth(base_render_buffers *p_frame) noexcept { glInvalidateTexImage(p_frame->fdepth, 0); }
 
-	void base_framebuffer::discard_tdepth(base_framebuffer *p_frame) noexcept
+	void base_render_buffers::discard_tdepth(base_render_buffers *p_frame) noexcept
 	{
 		static constexpr GLenum l_attachments[] =
 		{
@@ -114,11 +114,7 @@ namespace video {
 		glInvalidateNamedFramebufferData(p_frame->handle, 1, l_attachments);
 	}
 
-	void base_framebuffer::bind_for_draw(base_framebuffer const *p_frame) noexcept { glBindFramebuffer(GL_DRAW_FRAMEBUFFER, p_frame->handle); }
-	void base_framebuffer::bind_for_read(base_framebuffer const *p_frame) noexcept { glBindFramebuffer(GL_READ_FRAMEBUFFER, p_frame->handle); }
-	void base_framebuffer::bind_for_both(base_framebuffer const *p_frame) noexcept { glBindFramebuffer(GL_FRAMEBUFFER, p_frame->handle); }
-
-	void base_framebuffer::free(base_framebuffer *p_frame) noexcept
+	void base_render_buffers::free(base_render_buffers *p_frame) noexcept
 	{
 		GLuint l_handle = GL_NONE;
 		GLuint l_albedo = GL_NONE;
@@ -150,6 +146,9 @@ namespace video {
 			glDeleteFramebuffers(1, &l_handle);
 		}
 	}
+
+	void bind_for_draw(base_render_buffers const *p_frame) noexcept { glBindFramebuffer(GL_DRAW_FRAMEBUFFER, p_frame->handle); }
+	void bind_for_read(base_render_buffers const *p_frame) noexcept { glBindFramebuffer(GL_READ_FRAMEBUFFER, p_frame->handle); }
 
 	//!
 	//!

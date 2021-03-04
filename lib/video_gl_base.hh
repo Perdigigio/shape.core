@@ -67,6 +67,9 @@ namespace video {
 		real4 camera_top;
 		real2 viewport_pos;
 		real2 viewport_ext;
+
+		real4 light_dir;
+		real4 light_col;
 	};
 
 	struct base_blend_buffer

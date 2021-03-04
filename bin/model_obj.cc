@@ -48,25 +48,17 @@ struct triple
 	int n;
 };
 
+std::vector<sint32_t> g_v;
+std::vector<sint16_t> g_n;
+std::vector<sint16_t> g_t;
+
 struct object
 {
-	inline object() noexcept : v(0), n(0), t(0) { }
-
-	uint32_t v;
-	uint32_t n;
-	uint32_t t;
-	uint32_t o;
-
-	//!
-	//!
-
 	std::vector<triple> f;
 };
 
-std::vector<shape::IEEEFloat32> g_vp;
-std::vector<sint16_t> g_vn;
-std::vector<shape::IEEEFloat16> g_vt;
-
+uint32_t g_vtx = 0;
+uint32_t g_idx = 0;
 
 char g_line[1024] = {};
 char g_last[1024] = {};
@@ -82,17 +74,14 @@ bool parse_v(const char *buf)
 
 	if (std::sscanf(buf, "%f %f %f", &x, &y, &z) == 3)
 	{
-		g_vp.push_back(shape::as_IEEEFloat32(x));
-		g_vp.push_back(shape::as_IEEEFloat32(y));
-		g_vp.push_back(shape::as_IEEEFloat32(z));
+		g_v.push_back(shape::as_IEEEFloat32(x));
+		g_v.push_back(shape::as_IEEEFloat32(y));
+		g_v.push_back(shape::as_IEEEFloat32(z));
 	}
 	else
 		return false;
 
-	//!
-	//!
-
-	++g_objects[g_last].v;
+	g_vtx++;
 
 	//!
 	//!
@@ -109,17 +98,12 @@ bool parse_n(const char *buf)
 
 	if (std::sscanf(buf, "%f %f %f", &x, &y, &z) == 3)
 	{
-		g_vn.push_back(sint16_t(x * 0x7FFF));
-		g_vn.push_back(sint16_t(y * 0x7FFF));
-		g_vn.push_back(sint16_t(z * 0x7FFF));
+		g_n.push_back(sint16_t(x * 0x7FFF));
+		g_n.push_back(sint16_t(y * 0x7FFF));
+		g_n.push_back(sint16_t(z * 0x7FFF));
 	}
 	else
 		return false;
-
-	//!
-	//!
-
-	++g_objects[g_last].n;
 
 	//!
 	//!
@@ -136,16 +120,11 @@ bool parse_t(const char *buf)
 
 	if (std::sscanf(buf, "%f %f", &u, &v) == 2)
 	{
-		g_vt.push_back(shape::as_IEEEFloat16(u));
-		g_vt.push_back(shape::as_IEEEFloat16(v));
+		g_t.push_back(shape::as_IEEEFloat16(u));
+		g_t.push_back(shape::as_IEEEFloat16(v));
 	}
 	else
 		return false;
-
-	//!
-	//!
-
-	++g_objects[g_last].t;
 
 	//!
 	//!
@@ -173,6 +152,8 @@ bool parse_triple(const char *buf)
 	}
 	else
 		return false;
+
+	g_idx++;
 
 	//!
 	//!
@@ -211,6 +192,9 @@ bool parse_o(const char *buf)
 		g_last[i] = g_line[i];
 	}
 
+	if (v_flag)
+		std::cerr << "start parsing " << g_last << std::endl;
+
 	//!
 	//!
 
@@ -223,6 +207,11 @@ int main(int argc, char ** argv)
 
 	shape::file::type ifstream;
 	shape::file::type ofstream;
+
+//	argc = 5;
+//	argv = new char *[5]{ argv[0],
+//		"-o", "C:\\Users\\fracc\\Documents\\Progetti\\shape.test\\build\\Debug\\cube.mod",
+//		"-v", "C:\\Users\\fracc\\Documents\\Progetti\\shape.test\\cube.obj"};
 
 	//!
 	//!
@@ -284,99 +273,86 @@ int main(int argc, char ** argv)
 		else if (g_line[0] == 'o') parse_o(g_line + 1);
 	}
 
-	uint32_t l_offset = 0;
-
-	for (auto & p : g_objects)
+	shape::cAssetModelData l_model
 	{
-		auto & f = p.second.f;
+		g_vtx, g_idx, shape::asset_model_flags::has_nor | shape::asset_model_flags::has_tex, static_cast<uint32_t>(g_objects.size() & 0xFFFFFFFF)
+	};
 
-		if (v_flag)
-			std::cerr << "processing sub object"                                         << std::endl
-				  << "            name: " << (p.first.empty() ? "unknown" : p.first) << std::endl
-				  << "        vertexes: " << p.second.v                              << std::endl
-				  << "         indexes: " << p.second.f.size()                       << std::endl;
+	uint32_t l_last_idx = 0;
+	uint32_t l_last_sub = 0;
+
+	auto l_pos = l_model.get_pos_data();
+	auto l_nor = l_model.get_nor_data();
+	auto l_tex = l_model.get_tex_data();
+	auto l_idx = l_model.get_idx_data();
+	auto l_sub = l_model.get_sub_data();
+
+	std::memset(l_nor, 0, l_model.get_length(shape::base_model_fourcc::nor));
+	std::memset(l_tex, 0, l_model.get_length(shape::base_model_fourcc::tex));
+
+	for (size_t i = 0; i < l_model.get_vtx(); i++)
+	{
+		std::memcpy(&l_pos[i].dummy[0] , &g_v[i * 3 + 0], sizeof(sint32_t));
+		std::memcpy(&l_pos[i].dummy[1] , &g_v[i * 3 + 1], sizeof(sint32_t));
+		std::memcpy(&l_pos[i].dummy[2] , &g_v[i * 3 + 2], sizeof(sint32_t));
+	}
+
+	for (const auto& o : g_objects)
+	{
+		l_sub[l_last_sub++] = { l_last_idx, static_cast<uint32_t>(o.second.f.size() & 0xFFFFFFFF) };
 
 		//!
 		//!
 
-		if (f.size() % 3)
+		if (o.second.f.size() % 3)
 		{
 			std::cerr
 				<< "index count is not a multiple of 3, result may be not correct" << std::endl;
 		}
 
-		shape::cAssetModelData l_model { p.second.v, uint32_t(f.size()),
-			shape::asset_model_flags::has_nor |
-			shape::asset_model_flags::has_tex };
-
-		auto l_pos = l_model.get_pos_data();
-		auto l_nor = l_model.get_nor_data();
-		auto l_tex = l_model.get_tex_data();
-		auto l_idx = l_model.get_idx_data();
-
-		std::memset(l_pos, 0, l_model.get_length(shape::base_model_buffer::pos));
-		std::memset(l_nor, 0, l_model.get_length(shape::base_model_buffer::nor));
-		std::memset(l_tex, 0, l_model.get_length(shape::base_model_buffer::tex));
-		std::memset(l_idx, 0, l_model.get_length(shape::base_model_buffer::idx));
-
-		for (size_t i = 0; i < l_model.get_vtx(); i++)
-		{
-			std::memcpy(&l_pos[i].dummy[0] , &g_vp[(l_offset + i) * 3 + 0], sizeof(uint32_t));
-			std::memcpy(&l_pos[i].dummy[1] , &g_vp[(l_offset + i) * 3 + 1], sizeof(uint32_t));
-			std::memcpy(&l_pos[i].dummy[2] , &g_vp[(l_offset + i) * 3 + 2], sizeof(uint32_t));
-		}
-
-		for (size_t i = 0; i < l_model.get_idx(); i++)
+		for (const auto &_ : o.second.f)
 		{
 			//!
 			//!
 
-			l_idx[i].dummy[0] = f[i].v - 1 - l_offset;
+			l_idx[l_last_idx++].dummy[0] = _.v - 1;
 		}
 
 		//!
 		//! ASSEMBLE DATA
 		//!
 
-		for (const auto & _ : f)
+		for (const auto &_ : o.second.f)
 		{
-			auto _v = (_.v ? (_.v - 1) : 0) - l_offset;
+			auto _v = (_.v ? (_.v - 1) : 0);
 			auto _n = (_.n ? (_.n - 1) : 0);
 			auto _t = (_.t ? (_.t - 1) : 0);
 
-			if (!g_vn.empty())
+			if (!g_n.empty())
 			{
-				std::memcpy(&l_nor[_v].dummy[0], &g_vn[_n * 3 + 0], sizeof(uint16_t));
-				std::memcpy(&l_nor[_v].dummy[1], &g_vn[_n * 3 + 1], sizeof(uint16_t));
-				std::memcpy(&l_nor[_v].dummy[2], &g_vn[_n * 3 + 2], sizeof(uint16_t));
+				std::memcpy(&l_nor[_v].dummy[0], &g_n[_n * 3 + 0], sizeof(uint16_t));
+				std::memcpy(&l_nor[_v].dummy[1], &g_n[_n * 3 + 1], sizeof(uint16_t));
+				std::memcpy(&l_nor[_v].dummy[2], &g_n[_n * 3 + 2], sizeof(uint16_t));
 			}
 
-			if (!g_vt.empty())
+			if (!g_t.empty())
 			{
-				std::memcpy(&l_tex[_v].dummy[0], &g_vt[_t * 2 + 0], sizeof(uint16_t));
-				std::memcpy(&l_tex[_v].dummy[1], &g_vt[_t * 2 + 1], sizeof(uint16_t));
+				std::memcpy(&l_tex[_v].dummy[0], &g_t[_t * 2 + 0], sizeof(uint16_t));
+				std::memcpy(&l_tex[_v].dummy[1], &g_t[_t * 2 + 1], sizeof(uint16_t));
 			}
 		}
+	}
 
-		l_offset += p.second.v;
+	//!
+	//! WRITE DATA
+	//!
 
-		//!
-		//! WRITE DATA
-		//!
+	if (!shape::writer::write(ofstream, l_model))
+	{
+		std::cerr
+			<< "error writing to file" << std::endl;
 
-		if (!shape::writer::write(ofstream, l_model))
-		{
-			std::cerr
-				<< "error writing to file" << std::endl;
-
-			std::exit(EXIT_FAILURE);
-		}
-
-		//!
-		//! REMOVE PROCESSED DATA
-		//!
-
-		p.second = {};
+		std::exit(EXIT_FAILURE);
 	}
 
 	//!

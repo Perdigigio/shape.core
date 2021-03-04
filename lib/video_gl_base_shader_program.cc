@@ -3,10 +3,10 @@
 namespace shape {
 namespace video {
 
-	bool base_shader_program::init(base_shader_program *p_program) noexcept
+	bool base_shader_program::init(base_shader_program *p_program, const base_shader_program_shaders *p_shaders) noexcept
 	{
-		#ifdef DEBUG
-		if (!p_program || glIsProgramPipeline(p_program->program))
+		#ifdef _DEBUG
+		if (!p_program || !p_shaders || glIsProgram(p_program->program))
 		{
 			//!
 			//!
@@ -15,31 +15,38 @@ namespace video {
 		}
 		#endif
 
-		glCreateProgramPipelines(1, &p_program->program);
+		p_program->program = glCreateProgram();
 
 		//!
+		//! LINK PROGRAM
 		//!
 
 		if (p_program->program)
 		{
-			p_program->vshader = {};
-			p_program->hshader = {};
-			p_program->dshader = {};
-			p_program->gshader = {};
-			p_program->fshader = {};
+			if (p_shaders->vshader) glAttachShader(p_program->program, p_program->vshader = p_shaders->vshader);
+			if (p_shaders->hshader) glAttachShader(p_program->program, p_program->hshader = p_shaders->hshader);
+			if (p_shaders->dshader) glAttachShader(p_program->program, p_program->dshader = p_shaders->dshader);
+			if (p_shaders->gshader) glAttachShader(p_program->program, p_program->gshader = p_shaders->gshader);
+			if (p_shaders->fshader) glAttachShader(p_program->program, p_program->fshader = p_shaders->fshader);
+
+			//!
+			//!
+
+			glLinkProgram(p_program->program);
 		}
 
 		//!
 		//!
 
-		return glIsProgramPipeline(p_program->program);
+		return glIsProgram(p_program->program);
 	}
 
-	void base_shader_program::bind_vshader(base_shader_program *p_program, GLuint p_shader) noexcept { glUseProgramStages(p_program->program, GL_VERTEX_SHADER_BIT,          p_program->vshader = p_shader); }
-	void base_shader_program::bind_hshader(base_shader_program *p_program, GLuint p_shader) noexcept { glUseProgramStages(p_program->program, GL_TESS_CONTROL_SHADER_BIT,    p_program->hshader = p_shader); }
-	void base_shader_program::bind_dshader(base_shader_program *p_program, GLuint p_shader) noexcept { glUseProgramStages(p_program->program, GL_TESS_EVALUATION_SHADER_BIT, p_program->dshader = p_shader); }
-	void base_shader_program::bind_gshader(base_shader_program *p_program, GLuint p_shader) noexcept { glUseProgramStages(p_program->program, GL_GEOMETRY_SHADER_BIT,        p_program->gshader = p_shader); }
-	void base_shader_program::bind_fshader(base_shader_program *p_program, GLuint p_shader) noexcept { glUseProgramStages(p_program->program, GL_FRAGMENT_SHADER_BIT,        p_program->fshader = p_shader); }
+
+	void base_shader_program::detach_vshader(base_shader_program *p_program) noexcept { glDetachShader(p_program->program, p_program->vshader); p_program->vshader = GL_NONE; }
+	void base_shader_program::detach_hshader(base_shader_program *p_program) noexcept { glDetachShader(p_program->program, p_program->hshader); p_program->hshader = GL_NONE; }
+	void base_shader_program::detach_dshader(base_shader_program *p_program) noexcept { glDetachShader(p_program->program, p_program->dshader); p_program->dshader = GL_NONE; }
+	void base_shader_program::detach_gshader(base_shader_program *p_program) noexcept { glDetachShader(p_program->program, p_program->gshader); p_program->gshader = GL_NONE; }
+	void base_shader_program::detach_fshader(base_shader_program *p_program) noexcept { glDetachShader(p_program->program, p_program->fshader); p_program->fshader = GL_NONE; }
 
 	void base_shader_program::free(base_shader_program *p_program) noexcept
 	{
@@ -49,7 +56,7 @@ namespace video {
 	
 	void base_shader_program::grab(base_shader_program *p_program) noexcept
 	{
-		#ifdef DEBUG
+		#ifdef _DEBUG
 		if (!p_program || glIsProgramPipeline(p_program->program))
 		{
 			//!
@@ -65,9 +72,9 @@ namespace video {
 		glGetIntegerv(GL_PROGRAM_PIPELINE_BINDING, (GLint *)&p_program->program);
 	}
 
-	void base_shader_program::bind(const base_shader_program *p_program) noexcept
+	void bind_program(const base_shader_program *p_program) noexcept
 	{
-		glBindProgramPipeline(p_program->program);
+		glUseProgram(p_program->program);
 	}
 
 } //! shape::video

@@ -163,6 +163,35 @@ namespace video {
 		return glIsTexture(p_tex->handle);
 	}
 
+	bool base_texture::init_cube(base_texture *p_tex, uint32_t p_fmt, uint16_t p_lvl, vector2<GLsizei> p_dim) noexcept
+	{
+		#ifdef DEBUG
+		if (!p_tex || glIsTexture(p_tex->handle)) return false;
+		#endif
+
+		glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &p_tex->handle);
+
+		//!
+		//!
+
+		if (p_tex->handle)
+		{
+			p_tex->target = GL_TEXTURE_2D;
+			p_tex->format = p_fmt;
+			p_tex->levels = p_lvl;
+
+			//!
+			//!
+
+			glTextureStorage2D(p_tex->handle, p_lvl, get_fmt_enum(p_fmt), x(p_dim), y(p_dim));
+		}
+
+		//!
+		//!
+
+		return glIsTexture(p_tex->handle);
+	}
+
 	void base_texture::compressed_update_1d(base_texture const *p_tex, uint16_t p_img, const void *p_src, uint32_t p_fmt) noexcept { base_texture::compressed_update_1d(p_tex, p_img, p_src, p_fmt, get_length(p_tex, p_img), get_region(p_tex, p_img)); }
 	void base_texture::compressed_update_2d(base_texture const *p_tex, uint16_t p_img, const void *p_src, uint32_t p_fmt) noexcept { base_texture::compressed_update_2d(p_tex, p_img, p_src, p_fmt, get_length(p_tex, p_img), get_region(p_tex, p_img)); }
 	void base_texture::compressed_update_3d(base_texture const *p_tex, uint16_t p_img, const void *p_src, uint32_t p_fmt) noexcept { base_texture::compressed_update_3d(p_tex, p_img, p_src, p_fmt, get_length(p_tex, p_img), get_region(p_tex, p_img)); }
@@ -432,6 +461,7 @@ namespace video {
 			case pixel::ETC2: return GL_COMPRESSED_SRGB8_ALPHA8_ETC2_EAC;
 			case pixel::HD32: return GL_R11F_G11F_B10F;
 			case pixel::HD64: return GL_RGBA16F;
+			case pixel::FLT1: return GL_R32F;
 		}
 
 		//!

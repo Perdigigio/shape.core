@@ -40,9 +40,16 @@ namespace shape
 		return (size + base - 1) & ~(base - 1);
 	}
 
-	template<class T> static inline constexpr T * offset(T * p_addr, intptr_t p_base)
+	template<class T> static inline constexpr T * cast_offset(void * p_addr, intptr_t p_base)
 	{
-		return reinterpret_cast<T *>(reinterpret_cast<intptr_t>(p_addr) + p_base);
+		return  reinterpret_cast<T *>(
+				reinterpret_cast<intptr_t>(p_addr) + p_base);
+	}
+
+	template<class T> static inline constexpr const T * cast_offset(const void * p_addr, intptr_t p_base)
+	{
+		return  reinterpret_cast<const T *>(
+				reinterpret_cast<intptr_t>(p_addr) + p_base);
 	}
 
 	//!

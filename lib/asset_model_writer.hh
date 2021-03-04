@@ -22,6 +22,7 @@ namespace shape
 	template<> bool writer::write(const file::type &, const base_model::tex_t &);
 	template<> bool writer::write(const file::type &, const base_model::skn_t &);
 	template<> bool writer::write(const file::type &, const base_model::idx_t &);
+	template<> bool writer::write(const file::type &, const base_model::sub_t &);
 
 } //! shape
 

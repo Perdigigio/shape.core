@@ -8,9 +8,9 @@ namespace video {
 
 	struct base_shader_buffers
 	{
-		GLuint model[2]; //! [0] handle, [2] stride
-		GLuint frame[2]; //! [0] handle, [2] stride
-		GLuint blend[2]; //! [0] handle, [2] stride
+		GLuint model, model_stride;
+		GLuint frame, frame_stride;
+		GLuint blend, blend_stride;
 		GLuint count;
 		GLuint align;
 
@@ -30,15 +30,9 @@ namespace video {
 
 		//! --------------------------------------------------------------------------
 
-		static GLvoid* offset_model(base_shader_buffers const *, GLuint) noexcept;
-		static GLvoid* offset_frame(base_shader_buffers const *, GLuint) noexcept;
-		static GLvoid* offset_blend(base_shader_buffers const *, GLuint) noexcept;
-
-		//! --------------------------------------------------------------------------
-
-		static void bind_model(base_shader_buffers const *, GLuint) noexcept;
-		static void bind_frame(base_shader_buffers const *, GLuint) noexcept;
-		static void bind_blend(base_shader_buffers const *, GLuint) noexcept;
+		static GLsizeiptr offset_model(base_shader_buffers const *, GLuint) noexcept;
+		static GLsizeiptr offset_frame(base_shader_buffers const *, GLuint) noexcept;
+		static GLsizeiptr offset_blend(base_shader_buffers const *, GLuint) noexcept;
 
 		//! --------------------------------------------------------------------------
 
@@ -47,75 +41,86 @@ namespace video {
 	};
 
 	//!
+	//! BIND
 	//!
 
-	class cBaseShaderBuffers : private base_shader_buffers
+	void bind_model_ubuffer(base_shader_buffers const *, GLuint) noexcept;
+	void bind_frame_ubuffer(base_shader_buffers const *, GLuint) noexcept;
+	void bind_blend_ubuffer(base_shader_buffers const *, GLuint) noexcept;
+
+	//!
+	//!
+
+	class cBaseShaderBuffers
 	{
 	public:
-		inline cBaseShaderBuffers() noexcept
+		inline cBaseShaderBuffers() : m_object{ std::make_unique<base_shader_buffers>() }
 		{
-			this->model[0] = {};
-			this->model[1] = {};
-			this->frame[0] = {};
-                        this->frame[1] = {};
-			this->blend[0] = {};
-                        this->blend[1] = {};
-
-			this->count = {};
-			this->align = {};
-
-			this->lpmodel = nullptr;
-			this->lpframe = nullptr;
-			this->lpblend = nullptr;
+			m_object->model = {};
+			m_object->frame = {};
+			m_object->blend = {};
+			m_object->model_stride = {};
+			m_object->frame_stride = {};
+			m_object->blend_stride = {};
+			m_object->count = {};
+			m_object->align = {};
 		}
 
 		//! -------------------------------------------------------------------------------------------------------------------
 
-		inline bool init(GLuint p_count) noexcept { return base_shader_buffers::init(this, p_count); }
+		inline bool init(GLuint p_count) noexcept { return base_shader_buffers::init(m_object.get(), p_count); }
 
 		//! -------------------------------------------------------------------------------------------------------------------
 
-		inline void discard_model() noexcept { base_shader_buffers::discard_model(this); }
-		inline void discard_frame() noexcept { base_shader_buffers::discard_frame(this); }
-		inline void discard_blend() noexcept { base_shader_buffers::discard_blend(this); }
+		inline void discard_model() noexcept { base_shader_buffers::discard_model(m_object.get()); }
+		inline void discard_frame() noexcept { base_shader_buffers::discard_frame(m_object.get()); }
+		inline void discard_blend() noexcept { base_shader_buffers::discard_blend(m_object.get()); }
 
 		//! -------------------------------------------------------------------------------------------------------------------
 
-		inline GLvoid* offset_model(GLuint p_which) const noexcept { return base_shader_buffers::offset_model(this, p_which); }
-		inline GLvoid* offset_frame(GLuint p_which) const noexcept { return base_shader_buffers::offset_frame(this, p_which); }
-		inline GLvoid* offset_blend(GLuint p_which) const noexcept { return base_shader_buffers::offset_blend(this, p_which); }
+		inline GLsizeiptr offset_model(GLuint p_which) const noexcept { return base_shader_buffers::offset_model(m_object.get(), p_which); }
+		inline GLsizeiptr offset_frame(GLuint p_which) const noexcept { return base_shader_buffers::offset_frame(m_object.get(), p_which); }
+		inline GLsizeiptr offset_blend(GLuint p_which) const noexcept { return base_shader_buffers::offset_blend(m_object.get(), p_which); }
 
 		//! -------------------------------------------------------------------------------------------------------------------
 
-		inline void bind_model(GLuint p_which) noexcept { base_shader_buffers::bind_model(this, p_which); }
-		inline void bind_frame(GLuint p_which) noexcept { base_shader_buffers::bind_frame(this, p_which); }
-		inline void bind_blend(GLuint p_which) noexcept { base_shader_buffers::bind_blend(this, p_which); }
-
-		//! -------------------------------------------------------------------------------------------------------------------
-
-		inline void free() noexcept { base_shader_buffers::free(this); }
-		inline void grab() noexcept { base_shader_buffers::grab(this); }
+		inline void free() noexcept { base_shader_buffers::free(m_object.get()); }
+		inline void grab() noexcept { base_shader_buffers::grab(m_object.get()); }
 
 		//!
 		//! GETTERS
 		//!
 
-		inline GLuint get_model() const noexcept { return this->model[0]; }
-		inline GLuint get_frame() const noexcept { return this->frame[0]; }
-		inline GLuint get_blend() const noexcept { return this->blend[0]; }
-		inline GLuint get_count() const noexcept { return this->count; }
-		inline GLuint get_align() const noexcept { return this->align; }
-
-		inline GLuint get_model_stride() const noexcept { return this->model[1]; }
-		inline GLuint get_frame_stride() const noexcept { return this->frame[1]; }
-		inline GLuint get_blend_stride() const noexcept { return this->blend[1]; }
+		inline GLuint get_model() const noexcept { return m_object->model; }
+		inline GLuint get_frame() const noexcept { return m_object->frame; }
+		inline GLuint get_blend() const noexcept { return m_object->blend; }
+		inline GLuint get_count() const noexcept { return m_object->count; }
+		inline GLuint get_align() const noexcept { return m_object->align; }
+		inline GLuint get_model_stride() const noexcept { return m_object->model_stride; }
+		inline GLuint get_frame_stride() const noexcept { return m_object->frame_stride; }
+		inline GLuint get_blend_stride() const noexcept { return m_object->blend_stride; }
 
 		//!
 		//!
 
-		inline base_model_buffer * get_lpmodel(GLuint p_which = 0) const noexcept { return static_cast<base_model_buffer*>(offset_model(p_which)); }
-		inline base_frame_buffer * get_lpframe(GLuint p_which = 0) const noexcept { return static_cast<base_frame_buffer*>(offset_frame(p_which)); }
-		inline base_blend_buffer * get_lpblend(GLuint p_which = 0) const noexcept { return static_cast<base_blend_buffer*>(offset_blend(p_which)); }
+		inline base_model_buffer * get_lpmodel(GLuint p_which = 0) const noexcept { return cast_offset<base_model_buffer>(m_object->lpmodel, offset_model(p_which)); }
+		inline base_frame_buffer * get_lpframe(GLuint p_which = 0) const noexcept { return cast_offset<base_frame_buffer>(m_object->lpframe, offset_frame(p_which)); }
+		inline base_blend_buffer * get_lpblend(GLuint p_which = 0) const noexcept { return cast_offset<base_blend_buffer>(m_object->lpblend, offset_blend(p_which)); }
+
+		//! -------------------------------------------------------------------------------------------------------------------
+
+		inline void bind_model(GLuint p_which) noexcept { bind_model_ubuffer(m_object.get(), p_which); }
+		inline void bind_frame(GLuint p_which) noexcept { bind_frame_ubuffer(m_object.get(), p_which); }
+		inline void bind_blend(GLuint p_which) noexcept { bind_blend_ubuffer(m_object.get(), p_which); }
+
+		//! -------------------------------------------------------------------------------------------------------------------
+
+		inline ~cBaseShaderBuffers() noexcept
+		{
+			cBaseShaderBuffers::free();
+		}
+	private:
+		std::unique_ptr<base_shader_buffers> m_object;
 	};
 
 } //! shape::video

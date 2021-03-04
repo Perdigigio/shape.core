@@ -31,29 +31,6 @@ namespace shape
 
 	//! ----------------------------------------------------------------------------------
 
-	template<class T> static inline vector2<T>& set(vector2<T> &r, T a) noexcept
-	{
-		x(r) = a;
-		y(r) = a; return r;
-	}
-
-	template<class T> static inline vector3<T>& set(vector3<T> &r, T a) noexcept
-	{
-		x(r) = a;
-		y(r) = a;
-		z(r) = a; return r;
-	}
-
-	template<class T> static inline vector4<T>& set(vector4<T> &r, T a) noexcept
-	{
-		x(r) = a;
-		y(r) = a;
-		z(r) = a;
-		w(r) = a; return r;
-	}
-
-	//! ----------------------------------------------------------------------------------
-
 	template<class T> static inline vector2<T>& add(vector2<T> &r, vector2<T> a, vector2<T> b) noexcept
 	{
 		x(r) = x(a) + x(b);

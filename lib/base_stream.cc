@@ -19,7 +19,7 @@ namespace shape
 
 	//! -----------------------------------------------------------------------------------------------------------------
 
-	bool stream::good(const file::type &p_fh) noexcept { return !fail(p_fh); }
+	bool stream::good(const file::type &p_fh) noexcept { return !fail(p_fh) && !std::feof(p_fh.get()); }
 	bool stream::fail(const file::type &p_fh) noexcept
 	{
 		//!

@@ -7,11 +7,12 @@
 namespace shape
 {
 
-	constexpr uint32_t base_model_buffer::pos;
-	constexpr uint32_t base_model_buffer::nor;
-	constexpr uint32_t base_model_buffer::tex;
-	constexpr uint32_t base_model_buffer::skn;
-	constexpr uint32_t base_model_buffer::idx;
+	constexpr uint32_t base_model_fourcc::pos;
+	constexpr uint32_t base_model_fourcc::nor;
+	constexpr uint32_t base_model_fourcc::tex;
+	constexpr uint32_t base_model_fourcc::skn;
+	constexpr uint32_t base_model_fourcc::idx;
+	constexpr uint32_t base_model_fourcc::sub;
 
 } //! shape
 

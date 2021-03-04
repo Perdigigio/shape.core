@@ -25,6 +25,7 @@ namespace shape
 		uint32_t vtx;
 		uint32_t idx;
 		uint32_t fmt;
+		uint32_t sub;
 
 		//!
 		//!
@@ -39,11 +40,20 @@ namespace shape
 	class cAssetModel : private asset_model
 	{
 	public:
-		inline cAssetModel(uint32_t p_vtx = {}, uint32_t p_idx = {}, uint32_t p_fmt = {}) noexcept
+		inline cAssetModel() noexcept
+		{
+			this->vtx = 0;
+			this->idx = 0;
+			this->fmt = 0;
+			this->sub = 0;
+		}
+
+		inline cAssetModel(uint32_t p_vtx, uint32_t p_idx, uint32_t p_fmt, uint32_t p_sub) noexcept
 		{
 			this->vtx = p_vtx;
 			this->idx = p_idx;
 			this->fmt = p_fmt;
+			this->sub = p_sub;
 		}
 
 		inline bool has_pos() const noexcept { return this->vtx != 0; }
@@ -51,6 +61,7 @@ namespace shape
 		inline bool has_nor() const noexcept { return this->vtx != 0 && this->fmt & asset_model_flags::has_nor; }
 		inline bool has_tex() const noexcept { return this->vtx != 0 && this->fmt & asset_model_flags::has_tex; }
 		inline bool has_skn() const noexcept { return this->vtx != 0 && this->fmt & asset_model_flags::has_skn; }
+		inline bool has_sub() const noexcept { return this->sub != 0; }
 
 		//!
 		//! GETTERS
@@ -64,31 +75,27 @@ namespace shape
 		inline uint32_t get_vtx() const noexcept { return this->vtx; }
 		inline uint32_t get_idx() const noexcept { return this->idx; }
 		inline uint32_t get_fmt() const noexcept { return this->fmt; }
+		inline uint32_t get_sub() const noexcept { return this->sub; }
 	};
 
 	class cAssetModelData : public cAssetModel
 	{
 	public:
-		inline cAssetModelData(uint32_t p_vtx = {}, uint32_t p_idx = {}, uint32_t p_fmt = {}) : cAssetModel(p_vtx, p_idx, p_fmt)
-		{
-			//!
-			//!
+		cAssetModelData();
+		cAssetModelData(uint32_t, uint32_t, uint32_t, uint32_t);
 
-			cAssetModelData::realloc();
-		}
+		//! --------------------------------------------------------------------------------------------------------------
 
-		void realloc();
 		void dispose();
 
-		//!
-		//! GETTERS
-		//!
+		//! --------------------------------------------------------------------------------------------------------------
 
 		inline base_model::pos_t * get_pos_data() const noexcept { return static_cast<base_model::pos_t *>(m_pos.get()); }
 		inline base_model::nor_t * get_nor_data() const noexcept { return static_cast<base_model::nor_t *>(m_nor.get()); }
 		inline base_model::tex_t * get_tex_data() const noexcept { return static_cast<base_model::tex_t *>(m_tex.get()); }
 		inline base_model::skn_t * get_skn_data() const noexcept { return static_cast<base_model::skn_t *>(m_skn.get()); }
 		inline base_model::idx_t * get_idx_data() const noexcept { return static_cast<base_model::idx_t *>(m_idx.get()); }
+		inline base_model::sub_t * get_sub_data() const noexcept { return static_cast<base_model::sub_t *>(m_sub.get()); }
 
 	private:
 		buffer<heap_t>::type_t m_idx;
@@ -96,6 +103,7 @@ namespace shape
 		buffer<heap_t>::type_t m_nor;
 		buffer<heap_t>::type_t m_tex;
 		buffer<heap_t>::type_t m_skn;
+		buffer<heap_t>::type_t m_sub;
 	};
 
 } //! shape

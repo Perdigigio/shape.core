@@ -13,11 +13,12 @@ namespace shape
 
 		switch (p_buf)
 		{
-			case base_model_buffer::pos: return p_obj->vtx * l_stride;
-			case base_model_buffer::nor: return p_obj->vtx * l_stride;
-			case base_model_buffer::tex: return p_obj->vtx * l_stride;
-			case base_model_buffer::skn: return p_obj->vtx * l_stride;
-			case base_model_buffer::idx: return p_obj->idx * l_stride;
+			case base_model_fourcc::pos: return p_obj->vtx * l_stride;
+			case base_model_fourcc::nor: return p_obj->vtx * l_stride;
+			case base_model_fourcc::tex: return p_obj->vtx * l_stride;
+			case base_model_fourcc::skn: return p_obj->vtx * l_stride;
+			case base_model_fourcc::idx: return p_obj->idx * l_stride;
+			case base_model_fourcc::sub: return p_obj->sub * l_stride;
 		}
 
 		//!
@@ -30,11 +31,12 @@ namespace shape
 	{
 		switch (p_buf)
 		{
-			case base_model_buffer::pos: return sizeof(base_model::pos_t);
-			case base_model_buffer::nor: return sizeof(base_model::nor_t);
-			case base_model_buffer::tex: return sizeof(base_model::tex_t);
-			case base_model_buffer::skn: return sizeof(base_model::skn_t);
-			case base_model_buffer::idx: return sizeof(base_model::idx_t);
+			case base_model_fourcc::pos: return sizeof(base_model::pos_t);
+			case base_model_fourcc::nor: return sizeof(base_model::nor_t);
+			case base_model_fourcc::tex: return sizeof(base_model::tex_t);
+			case base_model_fourcc::skn: return sizeof(base_model::skn_t);
+			case base_model_fourcc::idx: return sizeof(base_model::idx_t);
+			case base_model_fourcc::sub: return sizeof(base_model::sub_t);
 		}
 
 		//!
@@ -43,13 +45,16 @@ namespace shape
 		return 0;
 	}
 
-	void cAssetModelData::realloc()
+	cAssetModelData::cAssetModelData() = default;
+
+	cAssetModelData::cAssetModelData(uint32_t p_vtx, uint32_t p_idx, uint32_t p_fmt, uint32_t p_sub) : cAssetModel{ p_vtx, p_idx, p_fmt, p_sub }
 	{
-		if (has_pos() && !m_pos) m_pos = buffer_alloc<heap_t>(get_length(base_model_buffer::pos));
-		if (has_idx() && !m_idx) m_idx = buffer_alloc<heap_t>(get_length(base_model_buffer::idx));
-		if (has_nor() && !m_nor) m_nor = buffer_alloc<heap_t>(get_length(base_model_buffer::nor));
-		if (has_tex() && !m_tex) m_tex = buffer_alloc<heap_t>(get_length(base_model_buffer::tex));
-		if (has_skn() && !m_skn) m_skn = buffer_alloc<heap_t>(get_length(base_model_buffer::skn));
+		if (has_pos()) m_pos = buffer_alloc<heap_t>(get_length(base_model_fourcc::pos));
+		if (has_idx()) m_idx = buffer_alloc<heap_t>(get_length(base_model_fourcc::idx));
+		if (has_nor()) m_nor = buffer_alloc<heap_t>(get_length(base_model_fourcc::nor));
+		if (has_tex()) m_tex = buffer_alloc<heap_t>(get_length(base_model_fourcc::tex));
+		if (has_skn()) m_skn = buffer_alloc<heap_t>(get_length(base_model_fourcc::skn));
+		if (has_sub()) m_sub = buffer_alloc<heap_t>(get_length(base_model_fourcc::sub));
 	}
 
 	void cAssetModelData::dispose()

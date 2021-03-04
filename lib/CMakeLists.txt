@@ -13,6 +13,7 @@ add_library(shape_core STATIC
 	asset_model_writer.cc
 	asset_sound.cc
 	base.cc
+	base_component_dynamic.cc
 	base_reader.cc
 	base_stream.cc
 	base_writer.cc
@@ -23,14 +24,14 @@ add_library(shape_core_video STATIC
 	video_model.cc
 	video_gl_glad.c
 	video_gl_base_device.cc
-	video_gl_base_framebuffer.cc
+	video_gl_base_render_buffers.cc
 	video_gl_base_shader_buffers.cc
 	video_gl_base_shader.cc
 	video_gl_base_shader_program.cc
-	video_gl_base_shader_textures.cc
+	video_gl_base_sampler.cc	
 	video_gl_base_texture.cc
-	video_gl_base_vertex_buffer.cc
-	video_gl_base_vertex.cc)
+	video_gl_base_vertex.cc
+	video_gl_base_vertex_buffers.cc)
 
 target_include_directories(shape_core PUBLIC $<INSTALL_INTERFACE:include> $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
 target_include_directories(shape_core_video PUBLIC $<INSTALL_INTERFACE:include> $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)

@@ -135,63 +135,47 @@ namespace shape
 
 		if (!details::is_almost(q, T{}))
 		{
-			T a =   r2(src).data[1] * r3(src).data[2] * r4(src).data[3] - r2(src).data[2] * r3(src).data[1] * r4(src).data[3] +
-				r2(src).data[2] * r3(src).data[3] * r4(src).data[1] - r2(src).data[1] * r3(src).data[3] * r4(src).data[2] +
-				r2(src).data[3] * r3(src).data[1] * r4(src).data[2] - r2(src).data[3] * r3(src).data[2] * r4(src).data[1];
-			T b =   r2(src).data[2] * r3(src).data[0] * r4(src).data[3] - r2(src).data[0] * r3(src).data[2] * r4(src).data[3] +
-				r2(src).data[0] * r3(src).data[3] * r4(src).data[2] - r2(src).data[2] * r3(src).data[3] * r4(src).data[0] +
-				r2(src).data[3] * r3(src).data[2] * r4(src).data[0] - r2(src).data[3] * r3(src).data[0] * r4(src).data[2];
-			T c =   r2(src).data[1] * r3(src).data[0] * r4(src).data[3] - r2(src).data[0] * r3(src).data[1] * r4(src).data[3] +
-				r2(src).data[0] * r3(src).data[3] * r4(src).data[1] - r2(src).data[1] * r3(src).data[3] * r4(src).data[0] +
-				r2(src).data[3] * r3(src).data[1] * r4(src).data[0] - r2(src).data[3] * r3(src).data[0] * r4(src).data[1];
-			T d =   r2(src).data[2] * r3(src).data[1] * r4(src).data[0] - r2(src).data[1] * r3(src).data[2] * r4(src).data[0] +
-				r2(src).data[1] * r3(src).data[0] * r4(src).data[2] - r2(src).data[2] * r3(src).data[0] * r4(src).data[1] +
-				r2(src).data[0] * r3(src).data[2] * r4(src).data[1] - r2(src).data[0] * r3(src).data[1] * r4(src).data[2];
-			T e =   r1(src).data[2] * r3(src).data[1] * r4(src).data[3] - r1(src).data[1] * r3(src).data[2] * r4(src).data[3] +
-				r1(src).data[1] * r3(src).data[3] * r4(src).data[2] - r1(src).data[2] * r3(src).data[3] * r4(src).data[1] +
-				r1(src).data[3] * r3(src).data[2] * r4(src).data[1] - r1(src).data[3] * r3(src).data[1] * r4(src).data[2];
-			T f =   r1(src).data[0] * r3(src).data[2] * r4(src).data[3] - r1(src).data[2] * r3(src).data[0] * r4(src).data[3] +
-				r1(src).data[2] * r3(src).data[3] * r4(src).data[0] - r1(src).data[0] * r3(src).data[3] * r4(src).data[2] +
-				r1(src).data[3] * r3(src).data[0] * r4(src).data[2] - r1(src).data[3] * r3(src).data[2] * r4(src).data[0];
-			T g =   r1(src).data[0] * r3(src).data[1] * r4(src).data[3] - r1(src).data[1] * r3(src).data[0] * r4(src).data[3] +
-				r1(src).data[1] * r3(src).data[3] * r4(src).data[0] - r1(src).data[0] * r3(src).data[3] * r4(src).data[1] +
-				r1(src).data[3] * r3(src).data[0] * r4(src).data[1] - r1(src).data[3] * r3(src).data[1] * r4(src).data[0];
-			T h =   r1(src).data[1] * r3(src).data[2] * r4(src).data[0] - r1(src).data[2] * r3(src).data[1] * r4(src).data[0] +
-				r1(src).data[2] * r3(src).data[0] * r4(src).data[1] - r1(src).data[1] * r3(src).data[0] * r4(src).data[2] +
-				r1(src).data[0] * r3(src).data[1] * r4(src).data[2] - r1(src).data[0] * r3(src).data[2] * r4(src).data[1];
-			T i =   r2(src).data[1] * r1(src).data[2] * r4(src).data[3] - r2(src).data[2] * r1(src).data[1] * r4(src).data[3] +
-				r2(src).data[2] * r1(src).data[3] * r4(src).data[1] - r2(src).data[1] * r1(src).data[3] * r4(src).data[2] +
-				r2(src).data[3] * r1(src).data[1] * r4(src).data[2] - r2(src).data[3] * r1(src).data[2] * r4(src).data[1];
-			T j =   r2(src).data[0] * r1(src).data[2] * r4(src).data[3] - r2(src).data[2] * r1(src).data[0] * r4(src).data[3] +
-				r2(src).data[2] * r1(src).data[3] * r4(src).data[0] - r2(src).data[0] * r1(src).data[3] * r4(src).data[2] +
-				r2(src).data[3] * r1(src).data[0] * r4(src).data[2] - r2(src).data[3] * r1(src).data[2] * r4(src).data[0];
-			T k =   r2(src).data[1] * r1(src).data[0] * r4(src).data[3] - r2(src).data[0] * r1(src).data[1] * r4(src).data[3] +
-				r2(src).data[0] * r1(src).data[3] * r4(src).data[1] - r2(src).data[1] * r1(src).data[3] * r4(src).data[0] +
-				r2(src).data[3] * r1(src).data[1] * r4(src).data[0] - r2(src).data[3] * r1(src).data[0] * r4(src).data[1];
-			T l =   r2(src).data[1] * r1(src).data[2] * r4(src).data[0] - r2(src).data[2] * r1(src).data[1] * r4(src).data[0] +
-				r2(src).data[2] * r1(src).data[0] * r4(src).data[1] - r2(src).data[1] * r1(src).data[0] * r4(src).data[2] +
-				r2(src).data[0] * r1(src).data[1] * r4(src).data[2] - r2(src).data[0] * r1(src).data[2] * r4(src).data[1];
-			T m =   r2(src).data[2] * r3(src).data[1] * r1(src).data[3] - r2(src).data[1] * r3(src).data[2] * r1(src).data[3] +
-				r2(src).data[1] * r3(src).data[3] * r1(src).data[2] - r2(src).data[2] * r3(src).data[3] * r1(src).data[1] +
-				r2(src).data[3] * r3(src).data[2] * r1(src).data[1] - r2(src).data[3] * r3(src).data[1] * r1(src).data[2];
-			T n =   r2(src).data[0] * r3(src).data[2] * r1(src).data[3] - r2(src).data[2] * r3(src).data[0] * r1(src).data[3] +
-				r2(src).data[2] * r3(src).data[3] * r1(src).data[0] - r2(src).data[0] * r3(src).data[3] * r1(src).data[2] +
-				r2(src).data[3] * r3(src).data[0] * r1(src).data[2] - r2(src).data[3] * r3(src).data[2] * r1(src).data[0];
-			T o =   r2(src).data[1] * r3(src).data[0] * r1(src).data[3] - r2(src).data[0] * r3(src).data[1] * r1(src).data[3] +
-				r2(src).data[0] * r3(src).data[3] * r1(src).data[1] - r2(src).data[1] * r3(src).data[3] * r1(src).data[0] +
-				r2(src).data[3] * r3(src).data[1] * r1(src).data[0] - r2(src).data[3] * r3(src).data[0] * r1(src).data[1];
-			T p =   r2(src).data[1] * r3(src).data[2] * r1(src).data[0] - r2(src).data[2] * r3(src).data[1] * r1(src).data[0] +
-				r2(src).data[2] * r3(src).data[0] * r1(src).data[1] - r2(src).data[1] * r3(src).data[0] * r1(src).data[2] +
-				r2(src).data[0] * r3(src).data[1] * r1(src).data[2] - r2(src).data[0] * r3(src).data[2] * r1(src).data[1];
+			T a =   r2(src).data[1] * r3(src).data[2] * r4(src).data[3] + r2(src).data[2] * r3(src).data[3] * r4(src).data[1] + r2(src).data[3] * r3(src).data[1] * r4(src).data[2] -
+				r2(src).data[2] * r3(src).data[1] * r4(src).data[3] - r2(src).data[1] * r3(src).data[3] * r4(src).data[2] - r2(src).data[3] * r3(src).data[2] * r4(src).data[1];
+			T b =   r2(src).data[0] * r3(src).data[2] * r4(src).data[3] + r2(src).data[2] * r3(src).data[3] * r4(src).data[0] + r2(src).data[3] * r3(src).data[0] * r4(src).data[2] -
+				r2(src).data[2] * r3(src).data[0] * r4(src).data[3] - r2(src).data[0] * r3(src).data[3] * r4(src).data[2] - r2(src).data[3] * r3(src).data[2] * r4(src).data[0];
+			T c =   r2(src).data[0] * r3(src).data[1] * r4(src).data[3] + r2(src).data[1] * r3(src).data[3] * r4(src).data[0] + r2(src).data[3] * r3(src).data[0] * r4(src).data[1] -
+				r2(src).data[1] * r3(src).data[0] * r4(src).data[3] - r2(src).data[0] * r3(src).data[3] * r4(src).data[1] - r2(src).data[3] * r3(src).data[1] * r4(src).data[0];
+			T d =   r2(src).data[0] * r3(src).data[1] * r4(src).data[2] + r2(src).data[1] * r3(src).data[2] * r4(src).data[0] + r2(src).data[2] * r3(src).data[0] * r4(src).data[1] -
+				r2(src).data[1] * r3(src).data[0] * r4(src).data[2] - r2(src).data[0] * r3(src).data[2] * r4(src).data[1] - r2(src).data[2] * r3(src).data[1] * r4(src).data[0];
+			T e =   r1(src).data[1] * r3(src).data[2] * r4(src).data[3] + r1(src).data[2] * r3(src).data[3] * r4(src).data[1] + r1(src).data[3] * r3(src).data[1] * r4(src).data[2] -
+				r1(src).data[2] * r3(src).data[1] * r4(src).data[3] - r1(src).data[1] * r3(src).data[3] * r4(src).data[2] - r1(src).data[3] * r3(src).data[2] * r4(src).data[1];
+			T f =   r1(src).data[0] * r3(src).data[2] * r4(src).data[3] + r1(src).data[2] * r3(src).data[3] * r4(src).data[0] + r1(src).data[3] * r3(src).data[0] * r4(src).data[2] -
+				r1(src).data[2] * r3(src).data[0] * r4(src).data[3] - r1(src).data[0] * r3(src).data[3] * r4(src).data[2] - r1(src).data[3] * r3(src).data[2] * r4(src).data[0];
+			T g =   r1(src).data[0] * r3(src).data[1] * r4(src).data[3] + r1(src).data[1] * r3(src).data[3] * r4(src).data[0] + r1(src).data[3] * r3(src).data[0] * r4(src).data[1] -
+				r1(src).data[1] * r3(src).data[0] * r4(src).data[3] - r1(src).data[0] * r3(src).data[3] * r4(src).data[1] - r1(src).data[3] * r3(src).data[1] * r4(src).data[0];
+			T h =   r1(src).data[0] * r3(src).data[1] * r4(src).data[2] + r1(src).data[1] * r3(src).data[2] * r4(src).data[0] + r1(src).data[2] * r3(src).data[0] * r4(src).data[1] -
+				r1(src).data[1] * r3(src).data[0] * r4(src).data[2] - r1(src).data[0] * r3(src).data[2] * r4(src).data[1] - r1(src).data[2] * r3(src).data[1] * r4(src).data[0];
+			T i =   r1(src).data[1] * r2(src).data[2] * r4(src).data[3] + r1(src).data[2] * r2(src).data[3] * r4(src).data[1] + r1(src).data[3] * r2(src).data[1] * r4(src).data[2] -
+				r1(src).data[2] * r2(src).data[1] * r4(src).data[3] - r1(src).data[1] * r2(src).data[3] * r4(src).data[2] - r1(src).data[3] * r2(src).data[2] * r4(src).data[1];
+			T j =   r1(src).data[0] * r2(src).data[2] * r4(src).data[3] + r1(src).data[2] * r2(src).data[3] * r4(src).data[0] + r1(src).data[3] * r2(src).data[0] * r4(src).data[2] -
+				r1(src).data[2] * r2(src).data[0] * r4(src).data[3] - r1(src).data[0] * r2(src).data[3] * r4(src).data[2] - r1(src).data[3] * r2(src).data[2] * r4(src).data[0];
+			T k =   r1(src).data[0] * r2(src).data[1] * r4(src).data[3] + r1(src).data[1] * r2(src).data[3] * r4(src).data[0] + r1(src).data[3] * r2(src).data[0] * r4(src).data[1] -
+				r1(src).data[1] * r2(src).data[0] * r4(src).data[3] - r1(src).data[0] * r2(src).data[3] * r4(src).data[1] - r1(src).data[3] * r2(src).data[1] * r4(src).data[0];
+			T l =   r1(src).data[0] * r2(src).data[1] * r4(src).data[2] + r1(src).data[1] * r2(src).data[2] * r4(src).data[0] + r1(src).data[2] * r2(src).data[0] * r4(src).data[1] -
+				r1(src).data[1] * r2(src).data[0] * r4(src).data[2] - r1(src).data[0] * r2(src).data[2] * r4(src).data[1] - r1(src).data[2] * r2(src).data[1] * r4(src).data[0];
+			T m =   r1(src).data[1] * r2(src).data[2] * r3(src).data[3] + r1(src).data[2] * r2(src).data[3] * r3(src).data[1] + r1(src).data[3] * r2(src).data[1] * r3(src).data[2] -
+				r1(src).data[2] * r2(src).data[1] * r3(src).data[3] - r1(src).data[1] * r2(src).data[3] * r3(src).data[2] - r1(src).data[3] * r2(src).data[2] * r3(src).data[1];
+			T n =   r1(src).data[0] * r2(src).data[2] * r3(src).data[3] + r1(src).data[2] * r2(src).data[3] * r3(src).data[0] + r1(src).data[3] * r2(src).data[0] * r3(src).data[2] -
+				r1(src).data[2] * r2(src).data[0] * r3(src).data[3] - r1(src).data[0] * r2(src).data[3] * r3(src).data[2] - r1(src).data[3] * r2(src).data[2] * r3(src).data[0];
+			T o =   r1(src).data[0] * r2(src).data[1] * r3(src).data[3] + r1(src).data[1] * r2(src).data[3] * r3(src).data[0] + r1(src).data[3] * r2(src).data[0] * r3(src).data[1] -
+				r1(src).data[1] * r2(src).data[0] * r3(src).data[3] - r1(src).data[0] * r2(src).data[3] * r3(src).data[1] - r1(src).data[3] * r2(src).data[1] * r3(src).data[0];
+			T p =   r1(src).data[0] * r2(src).data[1] * r3(src).data[2] + r1(src).data[1] * r2(src).data[2] * r3(src).data[0] + r1(src).data[2] * r2(src).data[0] * r3(src).data[1] -
+				r1(src).data[1] * r2(src).data[0] * r3(src).data[2] - r1(src).data[0] * r2(src).data[2] * r3(src).data[1] - r1(src).data[2] * r2(src).data[1] * r3(src).data[0];
 
 			//!
 			//! STORE TRANSPOSED
 			//!
 
-			copy(r1(ret), { a / q, e / q, i / q, m / q });
-			copy(r2(ret), { b / q, f / q, j / q, n / q });
-			copy(r3(ret), { c / q, g / q, k / q, o / q });
-			copy(r4(ret), { d / q, h / q, l / q, p / q });
+			copy(r1(ret), { +a / q, -e / q, +i / q, -m / q });
+			copy(r2(ret), { -b / q, +f / q, -j / q, +n / q });
+			copy(r3(ret), { +c / q, -g / q, +k / q, -o / q });
+			copy(r4(ret), { -d / q, +h / q, -l / q, +p / q });
 		}
 
 		//!
