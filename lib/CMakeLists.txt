@@ -5,23 +5,22 @@ include(GNUInstallDirs)
 #
 
 add_library(shape_core STATIC
-	asset_image.cc
-	asset_image_reader.cc
-	asset_image_writer.cc
-	asset_model.cc
-	asset_model_reader.cc
-	asset_model_writer.cc
-	asset_sound.cc
+	base_image.cc
+	base_image_bmp.cc
+	base_image_tga.cc
+	base_model.cc
+	base_model_obj.cc
+	#asset_model_reader.cc
+	#asset_model_writer.cc
+	#asset_sound.cc
 	base.cc
 	base_component_dynamic.cc
-	base_reader.cc
+	#base_reader.cc
 	base_stream.cc
-	base_writer.cc
+	#base_writer.cc
 	type.cc)
 
 add_library(shape_core_video STATIC
-	video_image.cc
-	video_model.cc
 	video_gl_glad.c
 	video_gl_base_device.cc
 	video_gl_base_render_buffers.cc
@@ -30,8 +29,8 @@ add_library(shape_core_video STATIC
 	video_gl_base_shader_program.cc
 	video_gl_base_sampler.cc	
 	video_gl_base_texture.cc
-	video_gl_base_vertex.cc
-	video_gl_base_vertex_buffers.cc)
+	video_gl_base_model.cc
+	video_gl_base_model_vertex.cc)
 
 target_include_directories(shape_core PUBLIC $<INSTALL_INTERFACE:include> $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
 target_include_directories(shape_core_video PUBLIC $<INSTALL_INTERFACE:include> $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)

@@ -260,12 +260,15 @@ namespace video {
 		}
 	}
 
-	void base_texture::update_1d(base_texture const *p_tex, uint16_t p_img, const void *p_src, GLenum p_fmt, GLenum p_type) noexcept { base_texture::update_1d(p_tex, p_img, p_src, p_fmt, p_type, get_region(p_tex, p_img)); }
-	void base_texture::update_2d(base_texture const *p_tex, uint16_t p_img, const void *p_src, GLenum p_fmt, GLenum p_type) noexcept { base_texture::update_2d(p_tex, p_img, p_src, p_fmt, p_type, get_region(p_tex, p_img)); }
-	void base_texture::update_3d(base_texture const *p_tex, uint16_t p_img, const void *p_src, GLenum p_fmt, GLenum p_type) noexcept { base_texture::update_3d(p_tex, p_img, p_src, p_fmt, p_type, get_region(p_tex, p_img)); }
+	void base_texture::update_1d(base_texture const *p_tex, uint16_t p_img, const void *p_src, uint32_t p_fmt) noexcept { base_texture::update_1d(p_tex, p_img, p_src, p_fmt, get_region(p_tex, p_img)); }
+	void base_texture::update_2d(base_texture const *p_tex, uint16_t p_img, const void *p_src, uint32_t p_fmt) noexcept { base_texture::update_2d(p_tex, p_img, p_src, p_fmt, get_region(p_tex, p_img)); }
+	void base_texture::update_3d(base_texture const *p_tex, uint16_t p_img, const void *p_src, uint32_t p_fmt) noexcept { base_texture::update_3d(p_tex, p_img, p_src, p_fmt, get_region(p_tex, p_img)); }
 
-	void base_texture::update_1d(base_texture const *p_tex, uint16_t p_img, const void *p_src, GLenum p_fmt, GLenum p_type, const base_region &p_dst) noexcept
+	void base_texture::update_1d(base_texture const *p_tex, uint16_t p_img, const void *p_src, uint32_t p_fmt, const base_region &p_dst) noexcept
 	{
+		const GLenum l_size = get_fmt_size(p_fmt);
+		const GLenum l_type = get_fmt_type(p_fmt);
+
 		GLsizei x = video::x(p_dst);
 		GLsizei w = video::w(p_dst);
 
@@ -278,12 +281,15 @@ namespace video {
 			//!
 			//!
 
-			glTextureSubImage1D(p_tex->handle, p_img, x, w, p_fmt, p_type, p_src);
+			glTextureSubImage1D(p_tex->handle, p_img, x, w, l_size, l_type, p_src);
 		}
 	}
 
-	void base_texture::update_2d(base_texture const *p_tex, uint16_t p_img, const void *p_src, GLenum p_fmt, GLenum p_type, const base_region &p_dst) noexcept
+	void base_texture::update_2d(base_texture const *p_tex, uint16_t p_img, const void *p_src, uint32_t p_fmt, const base_region &p_dst) noexcept
 	{
+		const GLenum l_size = get_fmt_size(p_fmt);
+		const GLenum l_type = get_fmt_type(p_fmt);
+
 		GLsizei x = video::x(p_dst);
 		GLsizei y = video::y(p_dst);
 		GLsizei w = video::w(p_dst);
@@ -298,12 +304,15 @@ namespace video {
 			//!
 			//!
 
-			glTextureSubImage2D(p_tex->handle, p_img, x, y, w, h, p_fmt, p_type, p_src);
+			glTextureSubImage2D(p_tex->handle, p_img, x, y, w, h, l_size, l_type, p_src);
 		}
 	}
 
-	void base_texture::update_3d(base_texture const *p_tex, uint16_t p_img, const void *p_src, GLenum p_fmt, GLenum p_type, const base_region &p_dst) noexcept
+	void base_texture::update_3d(base_texture const *p_tex, uint16_t p_img, const void *p_src, uint32_t p_fmt, const base_region &p_dst) noexcept
 	{
+		const GLenum l_size = get_fmt_size(p_fmt);
+		const GLenum l_type = get_fmt_type(p_fmt);
+
 		GLsizei x = video::x(p_dst);
 		GLsizei y = video::y(p_dst);
 		GLsizei z = video::z(p_dst);
@@ -320,87 +329,33 @@ namespace video {
 			//!
 			//!
 
-			glTextureSubImage3D(p_tex->handle, p_img, x, y, z, w, h, d, p_fmt, p_type, p_src);
+			glTextureSubImage3D(p_tex->handle, p_img, x, y, z, w, h, d, l_size, l_type, p_src);
 		}
 	}
-
-	void base_texture::upload_1d(base_texture const *p_tex, uint16_t p_img, const void *p_src, uint32_t p_fmt) noexcept
-	{
-		const GLenum l_size = get_fmt_size(p_fmt);
-		const GLenum l_type = get_fmt_type(p_fmt);
-
-		//!
-		//!
-
-		is_compressed(p_fmt) ?
-			base_texture::compressed_update_1d(p_tex, p_img, p_src, p_fmt) : base_texture::update_1d(p_tex, p_img, p_src, l_size, l_type);
-	}
-
-	void base_texture::upload_2d(base_texture const *p_tex, uint16_t p_img, const void *p_src, uint32_t p_fmt) noexcept
-	{
-		const GLenum l_size = get_fmt_size(p_fmt);
-		const GLenum l_type = get_fmt_type(p_fmt);
-
-		//!
-		//!
-
-		is_compressed(p_fmt) ?
-			base_texture::compressed_update_2d(p_tex, p_img, p_src, p_fmt) : base_texture::update_2d(p_tex, p_img, p_src, l_size, l_type);
-	}
-
-	void base_texture::upload_3d(base_texture const *p_tex, uint16_t p_img, const void *p_src, uint32_t p_fmt) noexcept
-	{
-		const GLenum l_size = get_fmt_size(p_fmt);
-		const GLenum l_type = get_fmt_type(p_fmt);
-
-		//!
-		//!
-
-		is_compressed(p_fmt) ?
-			base_texture::compressed_update_3d(p_tex, p_img, p_src, p_fmt) : base_texture::update_3d(p_tex, p_img, p_src, l_size, l_type);
-	}
-
-	void base_texture::upload_1d(base_texture const *p_tex, uint16_t p_img, const void *p_src, uint32_t p_fmt, GLsizei p_len, const base_region &p_dst) noexcept
-	{
-		const GLenum l_size = get_fmt_size(p_fmt);
-		const GLenum l_type = get_fmt_type(p_fmt);
-
-		//!
-		//!
-
-		is_compressed(p_fmt) ?
-			base_texture::compressed_update_1d(p_tex, p_img, p_src, p_fmt, p_len, p_dst) : base_texture::update_1d(p_tex, p_img, p_src, l_size, l_type, p_dst);
-	}
-
-	void base_texture::upload_2d(base_texture const *p_tex, uint16_t p_img, const void *p_src, uint32_t p_fmt, GLsizei p_len, const base_region &p_dst) noexcept
-	{
-		const GLenum l_size = get_fmt_size(p_fmt);
-		const GLenum l_type = get_fmt_type(p_fmt);
-
-		//!
-		//!
-
-		is_compressed(p_fmt) ?
-			base_texture::compressed_update_2d(p_tex, p_img, p_src, p_fmt, p_len, p_dst) : base_texture::update_2d(p_tex, p_img, p_src, l_size, l_type, p_dst);
-	}
-
-	void base_texture::upload_3d(base_texture const *p_tex, uint16_t p_img, const void *p_src, uint32_t p_fmt, GLsizei p_len, const base_region &p_dst) noexcept
-	{
-		const GLenum l_size = get_fmt_size(p_fmt);
-		const GLenum l_type = get_fmt_type(p_fmt);
-
-		//!
-		//!
-
-		is_compressed(p_fmt) ?
-			base_texture::compressed_update_3d(p_tex, p_img, p_src, p_fmt, p_len, p_dst) : base_texture::update_3d(p_tex, p_img, p_src, l_size, l_type, p_dst);
-	}
-
 
 	void base_texture::free(base_texture *p_tex) noexcept
 	{
 		if (p_tex)
 			glDeleteTextures(1, &p_tex->handle);
+	}
+
+	//!
+	//!
+
+	const cBaseTexture::_TEXTURE_1D cBaseTexture::TEXTURE_1D = {};
+	const cBaseTexture::_TEXTURE_2D cBaseTexture::TEXTURE_2D = {};
+	const cBaseTexture::_TEXTURE_3D cBaseTexture::TEXTURE_3D = {};
+	const cBaseTexture::_CUBEMAP cBaseTexture::CUBEMAP = {};
+
+	cBaseTexture::cBaseTexture(const _TEXTURE_1D &, uint32_t p_fmt, uint16_t p_lvl, vector1<GLsizei> p_dim) { if (!base_texture::init_1d(this, p_fmt, p_lvl, p_dim)) throw failure{}; }
+	cBaseTexture::cBaseTexture(const _TEXTURE_2D &, uint32_t p_fmt, uint16_t p_lvl, vector2<GLsizei> p_dim) { if (!base_texture::init_2d(this, p_fmt, p_lvl, p_dim)) throw failure{}; }
+	cBaseTexture::cBaseTexture(const _TEXTURE_3D &, uint32_t p_fmt, uint16_t p_lvl, vector3<GLsizei> p_dim) { if (!base_texture::init_3d(this, p_fmt, p_lvl, p_dim)) throw failure{}; }
+	cBaseTexture::cBaseTexture(const _TEXTURE_1D &, uint32_t p_fmt, uint16_t p_lvl, uint16_t p_num, vector1<GLsizei> p_dim) { if (!base_texture::init_1d_array(this, p_fmt, p_lvl, p_num, p_dim)) throw failure{}; }
+	cBaseTexture::cBaseTexture(const _TEXTURE_2D &, uint32_t p_fmt, uint16_t p_lvl, uint16_t p_num, vector2<GLsizei> p_dim) { if (!base_texture::init_2d_array(this, p_fmt, p_lvl, p_num, p_dim)) throw failure{}; }
+
+	cBaseTexture::cBaseTexture(const _CUBEMAP &, uint32_t p_fmt, uint16_t p_lvl, vector2<GLsizei> p_dim)
+	{
+		if (!base_texture::init_cube(this, p_fmt, p_lvl, p_dim)) throw failure{};
 	}
 
 	//!
@@ -478,6 +433,7 @@ namespace video {
 			case pixel::BM16: return GL_UNSIGNED_SHORT_5_6_5_REV;
 			case pixel::BM24: return GL_UNSIGNED_BYTE;
 			case pixel::BM32: return GL_UNSIGNED_INT_8_8_8_8_REV;
+			case pixel::FLT1: return GL_FLOAT;
 		}
 
 		//!
@@ -494,6 +450,7 @@ namespace video {
 			case pixel::BM16: return GL_BGR;
 			case pixel::BM24: return GL_BGR;
 			case pixel::BM32: return GL_BGRA;
+			case pixel::FLT1: return GL_RED;
 		}
 
 		//!

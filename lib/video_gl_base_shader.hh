@@ -12,50 +12,62 @@ namespace video {
 
 		//! -----------------------------------------------------------
 
-		static bool init_vshader(base_shader *, const char *) noexcept;
-		static bool init_hshader(base_shader *, const char *) noexcept;
-		static bool init_dshader(base_shader *, const char *) noexcept;
-		static bool init_gshader(base_shader *, const char *) noexcept;
-		static bool init_fshader(base_shader *, const char *) noexcept;
+		static bool init_vshader(base_shader *, const char *, GLsizei) noexcept;
+		static bool init_hshader(base_shader *, const char *, GLsizei) noexcept;
+		static bool init_dshader(base_shader *, const char *, GLsizei) noexcept;
+		static bool init_gshader(base_shader *, const char *, GLsizei) noexcept;
+		static bool init_fshader(base_shader *, const char *, GLsizei) noexcept;
 
 		//! -----------------------------------------------------------
 
 		static void free(base_shader *) noexcept;
 	};
 
-	class cBaseShader
+	class cBaseShader : private base_shader
 	{
 	public:
-		inline cBaseShader() : m_object{ std::make_unique<base_shader>() }
+		static const struct _VSHADER {} VSHADER;
+		static const struct _HSHADER {} HSHADER;
+		static const struct _DSHADER {} DSHADER;
+		static const struct _GSHADER {} GSHADER;
+		static const struct _FSHADER {} FSHADER;
+
+		//!
+		//!
+
+		inline cBaseShader(cBaseShader && p_other) noexcept
 		{
-			m_object->handle = {};
+			std::swap(this->handle = {}, p_other.handle);
+		}
+
+		//!
+		//!
+
+		cBaseShader(const _VSHADER &, const char *, GLsizei = -1);
+		cBaseShader(const _HSHADER &, const char *, GLsizei = -1);
+		cBaseShader(const _DSHADER &, const char *, GLsizei = -1);
+		cBaseShader(const _GSHADER &, const char *, GLsizei = -1);
+		cBaseShader(const _FSHADER &, const char *, GLsizei = -1);
+
+		//! ------------------------------------------------------------------------------------------------------------
+
+		void free() noexcept { base_shader::free(this); }
+
+		//! ------------------------------------------------------------------------------------------------------------
+
+		inline GLuint get_handle() const noexcept
+		{
+			return this->handle;
 		}
 
 		//! ------------------------------------------------------------------------------------------------------------
 
-		bool init_vshader(const char *p_source) noexcept { return base_shader::init_vshader(m_object.get(), p_source); }
-		bool init_hshader(const char *p_source) noexcept { return base_shader::init_hshader(m_object.get(), p_source); }
-		bool init_dshader(const char *p_source) noexcept { return base_shader::init_dshader(m_object.get(), p_source); }
-		bool init_gshader(const char *p_source) noexcept { return base_shader::init_gshader(m_object.get(), p_source); }
-		bool init_fshader(const char *p_source) noexcept { return base_shader::init_fshader(m_object.get(), p_source); }
-
-		//! ------------------------------------------------------------------------------------------------------------
-
-		void free() { base_shader::free(m_object.get()); }
-
-		//! ------------------------------------------------------------------------------------------------------------
-
-		inline GLuint get_handle() const noexcept { return m_object->handle; }
-
-		//! ------------------------------------------------------------------------------------------------------------
-
-		~cBaseShader() noexcept
+		inline cBaseShader & operator =(cBaseShader p_other) noexcept
 		{
-			cBaseShader::free();
+			std::swap(this->handle, p_other.handle); return *this;
 		}
 
-	private:
-		std::unique_ptr<base_shader> m_object;
+		inline ~cBaseShader() noexcept { base_shader::free(this); }
 	};
 
 } //! shape::video

@@ -10,54 +10,8 @@
 #	include <cmath>
 #endif
 
-#include <cstring>
-
 namespace shape
 {
-	typedef sint32_t IEEEFloat32;
-	typedef sint16_t IEEEFloat16;
-
-	static inline IEEEFloat32 as_IEEEFloat32(float p_float) noexcept
-	{
-		IEEEFloat32 l_float = {};
-
-		//!
-		//!
-
-		if (1)
-		{
-			//!
-			//!
-
-			std::memcpy(&l_float, &p_float, sizeof l_float);
-		}
-
-		//!
-		//!
-
-		return l_float;
-	}
-
-	static inline IEEEFloat16 as_IEEEFloat16(IEEEFloat32 p_float) noexcept
-	{
-		sint32_t s = (p_float & 0x80000000);
-		sint32_t e = (p_float & 0x7F800000) ? (p_float & 0x7F800000) - (0x38000000) : 0; //! HANDLE 0
-		sint32_t m = (p_float & 0x007FFFFF);
-
-		//!
-		//!
-
-		return  (s >> 16) & 0x8000 | (e >> 13) & 0x7C00 | (m >> 13) & 0x03FF;
-	}
-
-	static inline IEEEFloat16 as_IEEEFloat16(float p_float) noexcept
-	{
-		//!
-		//!
-
-		return as_IEEEFloat16(as_IEEEFloat32(p_float));
-	}
-
 	template<class T> struct vector1 { T data[1]; };
 	template<class T> struct vector2 { T data[2]; };
 	template<class T> struct vector3 { T data[3]; };

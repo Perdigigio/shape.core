@@ -9,31 +9,51 @@ typedef int64_t sint64_t;
 
 namespace shape
 {
-	struct base_model
-	{
-		struct pos_t { uint32_t dummy[3]; }; //! 3 * 32-bit [FLOAT IEEE-754]
-		struct nor_t { uint16_t dummy[8]; }; //! 8 * 16-bit [SNORM]
-		struct tex_t { uint16_t dummy[4]; }; //! 4 * 16-bit [FLOAT IEEE-754]
-		struct skn_t { uint32_t dummy[2]; }; //! 2 * 32-bit
-		struct idx_t { uint32_t dummy[1]; }; //! 1 * 32-bit
+	typedef sint32_t IEEEFloat32;
+	typedef sint16_t IEEEFloat16;
 
-		struct sub_t
-		{
-			uint32_t first;
-			uint32_t count;
-		};
-	};
-	
-	struct base_model_fourcc
+	static inline IEEEFloat32 as_IEEEFloat32(float p_float) noexcept
 	{
-		static constexpr auto pos = fourcc('p', 'o', 's', ' ');
-		static constexpr auto nor = fourcc('n', 'o', 'r', ' ');
-		static constexpr auto tex = fourcc('t', 'e', 'x', ' ');
-		static constexpr auto skn = fourcc('s', 'k', 'n', ' ');
-		static constexpr auto idx = fourcc('i', 'd', 'x', ' ');
-		static constexpr auto sub = fourcc('s', 'u', 'b', ' ');
-	};
-}
+		IEEEFloat32 l_float = {};
+
+		//!
+		//!
+
+		if (1)
+		{
+			//!
+			//!
+
+			std::memcpy(&l_float, &p_float, sizeof l_float);
+		}
+
+		//!
+		//!
+
+		return l_float;
+	}
+
+	static inline IEEEFloat16 as_IEEEFloat16(IEEEFloat32 p_float) noexcept
+	{
+		sint32_t s = (p_float & 0x80000000);
+		sint32_t e = (p_float & 0x7F800000) ? (p_float & 0x7F800000) - (0x38000000) : 0; //! HANDLE 0
+		sint32_t m = (p_float & 0x007FFFFF);
+
+		//!
+		//!
+
+		return  (s >> 16) & 0x8000 | (e >> 13) & 0x7C00 | (m >> 13) & 0x03FF;
+	}
+
+	static inline IEEEFloat16 as_IEEEFloat16(float p_float) noexcept
+	{
+		//!
+		//!
+
+		return as_IEEEFloat16(as_IEEEFloat32(p_float));
+	}
+
+} //! shape
 
 namespace shape {
 namespace video {
@@ -69,8 +89,6 @@ namespace video {
 			p_format == pixel::ETC1 ||
 			p_format == pixel::ETC2;
 	}
-
-
 
 } //! shape::video
 } //! shape
