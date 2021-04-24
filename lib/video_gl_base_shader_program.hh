@@ -1,58 +1,35 @@
 #ifndef SHAPE_VIDEO_BASE_SHADER_PROGRAM_HH__GUARD
 #define SHAPE_VIDEO_BASE_SHADER_PROGRAM_HH__GUARD
 
-#include "video_gl_base.hh"
+#include "video_gl_base_shader.hh"
 
 namespace shape {
 namespace video {
 
-	struct base_shader_program_shaders
-	{
-		GLuint vshader;
-		GLuint hshader;
-		GLuint dshader;
-		GLuint gshader;
-		GLuint fshader;
-	};
-
 	struct base_shader_program
 	{
 		GLuint program;
-		GLuint vshader; //! ref only
-		GLuint hshader; //! ref only
-		GLuint dshader; //! ref only
-		GLuint gshader; //! ref only
-		GLuint fshader; //! ref only
+		GLuint vshader; //! INTROSPECTION ONLY
+		GLuint hshader; //! INTROSPECTION ONLY
+		GLuint dshader; //! INTROSPECTION ONLY
+		GLuint gshader; //! INTROSPECTION ONLY
+		GLuint fshader; //! INTROSPECTION ONLY
 
 		//! -------------------------------------------------------------
 
-		static bool init(base_shader_program *, const base_shader_program_shaders *) noexcept;
+		static bool init(base_shader_program *) noexcept;
 
 		//! -------------------------------------------------------------
 
-		/**
-		 * @param program
-		 * @param uniform
-		 * @param uniform-len
-		 * @param uniform-buf
-		 */
-		static void set_uniform2f(const base_shader_program *, const char *, GLuint, const real2 *);
-		static void set_uniform3f(const base_shader_program *, const char *, GLuint, const real3 *);
-		static void set_uniform4f(const base_shader_program *, const char *, GLuint, const real4 *);
-		static void set_uniform2i(const base_shader_program *, const char *, GLuint, const sint2 *);
-		static void set_uniform3i(const base_shader_program *, const char *, GLuint, const sint3 *);
-		static void set_uniform4i(const base_shader_program *, const char *, GLuint, const sint4 *);
-		static void set_uniform2u(const base_shader_program *, const char *, GLuint, const uint2 *);
-		static void set_uniform3u(const base_shader_program *, const char *, GLuint, const uint3 *);
-		static void set_uniform4u(const base_shader_program *, const char *, GLuint, const uint4 *);
+		static void bind_vshader(base_shader_program *, GLuint) noexcept;
+		static void bind_hshader(base_shader_program *, GLuint) noexcept;
+		static void bind_dshader(base_shader_program *, GLuint) noexcept;
+		static void bind_gshader(base_shader_program *, GLuint) noexcept;
+		static void bind_fshader(base_shader_program *, GLuint) noexcept;
 
 		//! -------------------------------------------------------------
 
-		static void detach_vshader(base_shader_program *) noexcept;
-		static void detach_hshader(base_shader_program *) noexcept;
-		static void detach_dshader(base_shader_program *) noexcept;
-		static void detach_gshader(base_shader_program *) noexcept;
-		static void detach_fshader(base_shader_program *) noexcept;
+		static void bind(base_shader_program const *) noexcept;
 
 		//! -------------------------------------------------------------
 
@@ -62,16 +39,15 @@ namespace video {
 
 	//!
 	//!
-	//!
-
-	void bind_program(const base_shader_program *) noexcept;
-
-	//!
-	//!
 
 	class cBaseShaderProgram : private base_shader_program
 	{
 	public:
+		static const struct _INIT {} INIT;
+
+		//!
+		//!
+
 		inline cBaseShaderProgram() noexcept
 		{
 			this->program = {};
@@ -81,18 +57,35 @@ namespace video {
 			this->gshader = {};
 			this->fshader = {};
 		}
+		
+		inline cBaseShaderProgram(cBaseShaderProgram && p_other) noexcept : cBaseShaderProgram{}
+		{
+			std::swap(this->program, p_other.program);
+			std::swap(this->vshader, p_other.vshader);
+			std::swap(this->hshader, p_other.hshader);
+			std::swap(this->dshader, p_other.dshader);
+			std::swap(this->gshader, p_other.gshader);
+			std::swap(this->fshader, p_other.fshader);
+		}
+
+		//!
+		//!
+
+		cBaseShaderProgram(const _INIT &);
 
 		//! ---------------------------------------------------------------------------------------
 
-		inline bool init(const base_shader_program_shaders &p_program) noexcept { return base_shader_program::init(this, &p_program); }
+		inline void bind_vshader(GLuint p_shr) noexcept { base_shader_program::bind_vshader(this, p_shr); }
+		inline void bind_hshader(GLuint p_shr) noexcept { base_shader_program::bind_hshader(this, p_shr); }
+		inline void bind_dshader(GLuint p_shr) noexcept { base_shader_program::bind_dshader(this, p_shr); }
+		inline void bind_gshader(GLuint p_shr) noexcept { base_shader_program::bind_gshader(this, p_shr); }
+		inline void bind_fshader(GLuint p_shr) noexcept { base_shader_program::bind_fshader(this, p_shr); }
 
-		//! ---------------------------------------------------------------------------------------
-
-		inline void detach_vshader() noexcept { base_shader_program::detach_vshader(this); }
-		inline void detach_hshader() noexcept { base_shader_program::detach_hshader(this); }
-		inline void detach_dshader() noexcept { base_shader_program::detach_dshader(this); }
-		inline void detach_gshader() noexcept { base_shader_program::detach_gshader(this); }
-		inline void detach_fshader() noexcept { base_shader_program::detach_fshader(this); }
+		inline void bind_vshader(const cBaseShader &p_shr) noexcept { base_shader_program::bind_vshader(this, p_shr.get_handle()); }
+		inline void bind_hshader(const cBaseShader &p_shr) noexcept { base_shader_program::bind_hshader(this, p_shr.get_handle()); }
+		inline void bind_dshader(const cBaseShader &p_shr) noexcept { base_shader_program::bind_dshader(this, p_shr.get_handle()); }
+		inline void bind_gshader(const cBaseShader &p_shr) noexcept { base_shader_program::bind_gshader(this, p_shr.get_handle()); }
+		inline void bind_fshader(const cBaseShader &p_shr) noexcept { base_shader_program::bind_fshader(this, p_shr.get_handle()); }
 
 		//! ---------------------------------------------------------------------------------------
 
@@ -101,8 +94,7 @@ namespace video {
 
 		//! ---------------------------------------------------------------------------------------
 
-		inline void bind() const noexcept { video::bind_program(this); }
-
+		inline void bind() const noexcept { base_shader_program::bind(this); }
 
 		//!
 		//! GETTERS
@@ -114,6 +106,22 @@ namespace video {
 		inline GLuint get_dshader() const noexcept { return this->dshader; }
 		inline GLuint get_gshader() const noexcept { return this->gshader; }
 		inline GLuint get_fshader() const noexcept { return this->fshader; }
+
+		//! ---------------------------------------------------------------------------------------
+
+		cBaseShaderProgram& operator=(cBaseShaderProgram p_other) noexcept
+		{
+			std::swap(this->program, p_other.program);
+			std::swap(this->vshader, p_other.vshader);
+			std::swap(this->hshader, p_other.hshader);
+			std::swap(this->dshader, p_other.dshader);
+			std::swap(this->gshader, p_other.gshader);
+			std::swap(this->fshader, p_other.fshader); return *this;
+		}
+
+		//! ---------------------------------------------------------------------------------------
+
+		inline ~cBaseShaderProgram() noexcept { base_shader_program::free(this); }
 	};
 
 } //! shape::video

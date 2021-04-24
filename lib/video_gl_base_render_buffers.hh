@@ -52,61 +52,64 @@ namespace video {
 	//!
 	//!
 
-	class cBaseRenderBuffers
+	class cBaseRenderBuffers : private base_render_buffers
 	{
 	public:
-		inline cBaseRenderBuffers() : m_object{ std::make_unique<base_render_buffers>() }
+		inline cBaseRenderBuffers()
 		{
-			m_object->handle = {};
-			m_object->albedo = {};
-			m_object->normal = {};
-			m_object->params = {};
-			m_object->fdepth = {};
-			m_object->tdepth = {};
+			this->handle = {};
+			this->albedo = {};
+			this->normal = {};
+			this->params = {};
+			this->fdepth = {};
+			this->tdepth = {};
 		}
 
-		//! -----------------------------------------------------------------------------------------------------------------------
-
-		inline bool init(GLsizei w, GLsizei h, GLsizei n = 1) noexcept { return base_render_buffers::init(m_object.get(), w, h, n); }
-
-		//! -----------------------------------------------------------------------------------------------------------------------
-
-		inline void clear_albedo(float r, float g, float b, float a) noexcept { base_render_buffers::clear_albedo(m_object.get(), r, g, b, a); }
-		inline void clear_normal(float r, float g, float b, float a) noexcept { base_render_buffers::clear_normal(m_object.get(), r, g, b, a); }
-		inline void clear_params(float r, float g, float b, float a) noexcept { base_render_buffers::clear_params(m_object.get(), r, g, b, a); }		
-		inline void clear_tdepth(float d) noexcept { base_render_buffers::clear_tdepth(m_object.get(), d); }
-		inline void clear_fdepth(float d) noexcept { base_render_buffers::clear_fdepth(m_object.get(), d); }
-
-		//! -----------------------------------------------------------------------------------------------------------------------
-
-		inline void discard_albedo() noexcept { base_render_buffers::discard_albedo(m_object.get()); }
-		inline void discard_normal() noexcept { base_render_buffers::discard_normal(m_object.get()); }
-		inline void discard_params() noexcept { base_render_buffers::discard_params(m_object.get()); }
-		inline void discard_fdepth() noexcept { base_render_buffers::discard_fdepth(m_object.get()); }
-		inline void discard_tdepth() noexcept { base_render_buffers::discard_tdepth(m_object.get()); }
-
-		//! -----------------------------------------------------------------------------------------------------------------------
-
-		inline void free() noexcept { base_render_buffers::free(m_object.get()); }
-
-		//! -----------------------------------------------------------------------------------------------------------------------
-
-		inline void bind_for_draw() const noexcept { video::bind_for_draw(m_object.get()); }
-		inline void bind_for_read() const noexcept { video::bind_for_read(m_object.get()); }
-
-		//! -----------------------------------------------------------------------------------------------------------------------
-
-		inline operator const base_render_buffers*() const noexcept { return m_object.get(); }
-
-		//! -----------------------------------------------------------------------------------------------------------------------
-
-		inline ~cBaseRenderBuffers() noexcept
+		inline cBaseRenderBuffers(cBaseRenderBuffers && p_other) noexcept : cBaseRenderBuffers{}
 		{
-			cBaseRenderBuffers::free();
+			std::swap(this->handle, p_other.handle);
+			std::swap(this->albedo, p_other.albedo);
+			std::swap(this->normal, p_other.normal);
+			std::swap(this->params, p_other.params);
+			std::swap(this->fdepth, p_other.fdepth);
+			std::swap(this->tdepth, p_other.tdepth);
 		}
 
-	private:
-		std::unique_ptr<base_render_buffers> m_object;
+		/**
+		 * @param wth
+		 * @param hth
+		 * @param num
+		 */
+		cBaseRenderBuffers(GLsizei, GLsizei, GLsizei = 1);
+
+		//! -----------------------------------------------------------------------------------------------------------------------
+
+		inline void clear_albedo(float r, float g, float b, float a) noexcept { base_render_buffers::clear_albedo(this, r, g, b, a); }
+		inline void clear_normal(float r, float g, float b, float a) noexcept { base_render_buffers::clear_normal(this, r, g, b, a); }
+		inline void clear_params(float r, float g, float b, float a) noexcept { base_render_buffers::clear_params(this, r, g, b, a); }		
+		inline void clear_tdepth(float d) noexcept { base_render_buffers::clear_tdepth(this, d); }
+		inline void clear_fdepth(float d) noexcept { base_render_buffers::clear_fdepth(this, d); }
+
+		//! -----------------------------------------------------------------------------------------------------------------------
+
+		inline void discard_albedo() noexcept { base_render_buffers::discard_albedo(this); }
+		inline void discard_normal() noexcept { base_render_buffers::discard_normal(this); }
+		inline void discard_params() noexcept { base_render_buffers::discard_params(this); }
+		inline void discard_fdepth() noexcept { base_render_buffers::discard_fdepth(this); }
+		inline void discard_tdepth() noexcept { base_render_buffers::discard_tdepth(this); }
+
+		//! -----------------------------------------------------------------------------------------------------------------------
+
+		inline void free() noexcept { base_render_buffers::free(this); }
+
+		//! -----------------------------------------------------------------------------------------------------------------------
+
+		inline void bind_for_draw() const noexcept { video::bind_for_draw(this); }
+		inline void bind_for_read() const noexcept { video::bind_for_read(this); }
+
+		//! -----------------------------------------------------------------------------------------------------------------------
+
+		inline ~cBaseRenderBuffers() noexcept { base_render_buffers::free(this); }
 	};
 
 } //! shape::video

@@ -28,18 +28,6 @@ namespace video {
 
 		inline void init() noexcept { base_device::init(this); }
 		inline void free() noexcept { base_device::free(this); }
-
-		//! --------------------------------------------------------------------------------------------
-
-		inline bool operator ==(base_device r) noexcept { return major == r.major && minor == r.minor; }
-		inline bool operator !=(base_device r) noexcept { return major != r.major || minor != r.minor; }
-		inline bool operator >=(base_device r) noexcept { return major >= r.major && minor >= r.minor; }
-		inline bool operator <=(base_device r) noexcept { return major <= r.major && minor <= r.minor; }
-
-		//! --------------------------------------------------------------------------------------------
-
-		inline bool operator <(base_device r) noexcept { return major < r.major && minor < r.minor; }
-		inline bool operator >(base_device r) noexcept { return major > r.major && minor > r.minor; }
 	};
 
 } //! shape::video

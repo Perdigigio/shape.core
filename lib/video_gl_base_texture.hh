@@ -6,18 +6,6 @@
 namespace shape {
 namespace video {
 
-	struct base_texture_target
-	{
-		static constexpr auto TEX_1D = GL_TEXTURE_1D;
-		static constexpr auto TEX_2D = GL_TEXTURE_2D;
-		static constexpr auto TEX_3D = GL_TEXTURE_3D;
-		static constexpr auto TEX_1D_ARRAY = GL_TEXTURE_1D_ARRAY;
-		static constexpr auto TEX_2D_ARRAY = GL_TEXTURE_2D_ARRAY;
-	};
-
-	//!
-	//!
-
 	struct base_texture
 	{
 		GLuint handle;

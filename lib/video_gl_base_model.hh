@@ -17,9 +17,10 @@ namespace video {
 
 	struct base_model_flag
 	{
-		static constexpr uint32_t has_nor = (1 << 0);
-		static constexpr uint32_t has_tex = (1 << 1);
-		static constexpr uint32_t has_skn = (1 << 2);
+		static constexpr GLuint has_pos = (1 << 0);
+		static constexpr GLuint has_nor = (1 << 1);
+		static constexpr GLuint has_tex = (1 << 2);
+		static constexpr GLuint has_skn = (1 << 3);
 	};
 
 	//!
@@ -168,6 +169,8 @@ namespace video {
 		inline GLuint get_tex_buffer() const noexcept { return this->tex_buffer; }
 		inline GLuint get_skn_buffer() const noexcept { return this->skn_buffer; }
 		inline GLuint get_idx_buffer() const noexcept { return this->idx_buffer; }
+
+		inline const base_model * get() const noexcept { return this; }
 
 		//! ----------------------------------------------------------------------------------------------------
 

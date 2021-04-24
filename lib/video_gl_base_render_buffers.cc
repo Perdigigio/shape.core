@@ -153,6 +153,14 @@ namespace video {
 	//!
 	//!
 
+	cBaseRenderBuffers::cBaseRenderBuffers(GLsizei p_wth, GLsizei p_hth, GLsizei p_num)
+	{
+		if (!base_render_buffers::init(this, p_wth, p_hth, p_num)) throw failure{};
+	}
+
+	//!
+	//!
+
 	bool create_color(GLuint &p_color, GLenum p_format, GLsizei p_w, GLsizei p_h, GLsizei p_n) noexcept
 	{
 		glCreateTextures(GL_TEXTURE_2D_MULTISAMPLE, 1, &p_color);

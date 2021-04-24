@@ -29,10 +29,16 @@ namespace video {
 			return false;
 		}
 		#endif
+		
 
 		bool l_status =
 			buffer_alloc(l_pos_buffer, p_vtx, sizeof(base_model_pos)) &&
 			buffer_alloc(l_idx_buffer, p_idx, sizeof(base_model_idx));
+
+		//!
+		//!
+
+		p_fmt |= base_model_flag::has_pos;
 
 		//!
 		//! EXTRA BUFFERS
